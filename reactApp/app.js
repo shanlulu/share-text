@@ -58,15 +58,15 @@ class MyEditor extends React.Component {
         <p>Document ID: testID</p>
         <button type="button" className="saveButton">Save Changes</button>
         <div className="toolbar">
-          <button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}> <span className="glyphicon glyphicon-bold"></span></button>
-          <button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span className="glyphicon glyphicon-italic"></span></button>
-          <button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span className="glyphicon glyphicon-text-color"></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-align-left"></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-align-center"></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-align-right"></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-list"></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-text-color"></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-tint"></span></button>
+          <button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span title="Change Text Size"><span className="glyphicon glyphicon-text-size"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span title="Change Text Color"><span className="glyphicon glyphicon-tint"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span title="Bold"><span className="glyphicon glyphicon-bold"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Italicize"><span className="glyphicon glyphicon-italic"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Underline"><span className="glyphicon glyphicon-text-color"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Left"><span className="glyphicon glyphicon-align-left"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Center"><span className="glyphicon glyphicon-align-center"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Right"><span className="glyphicon glyphicon-align-right"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Bullet List"><span className="glyphicon glyphicon-list"></span></span></button>
         </div>
         <div className="editor">
           <Editor editorState={this.state.editorState} onChange={this.onChange} />
