@@ -80,16 +80,24 @@ class MyEditor extends React.Component {
         <p>Document ID: testID</p>
         <button type="button" className="saveButton">Save Changes</button>
         <div className="toolbar">
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Change Text Size"><span className="glyphicon glyphicon-text-size"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Change Text Color"><span className="glyphicon glyphicon-tint"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span title="Bold"><span className="glyphicon glyphicon-bold"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span title="Italicize"><span className="glyphicon glyphicon-italic"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span title="Underline"><span className="glyphicon glyphicon-text-color"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onLeftAlignClick.bind(this)}><span title="Align Left"><span className="glyphicon glyphicon-align-left"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onCenterAlignClick.bind(this)}><span title="Align Center"><span className="glyphicon glyphicon-align-center"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span title="Align Right"><span className="glyphicon glyphicon-align-right"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Bullet List"><span className="glyphicon glyphicon-list"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Numbered List"><span className="glyphicon glyphicon-sort-by-order"></span></span></button>
+          <span title="Change Text Size"><button className="styleButton glyphicon glyphicon-text-size" type="button"> <select>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="24">24</option>
+          </select></button></span>
+          <span title="Change Text Color"><button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-tint"></span></button></span>
+          <span title="Bold"><button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span className="glyphicon glyphicon-bold"></span></button></span>
+          <span title="Italicize"><button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span className="glyphicon glyphicon-italic"></span></button></span>
+          <span title="Underline"><button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span className="glyphicon glyphicon-text-color"></span></button></span>
+          <span title="Align Left"><button className="styleButton" type="button" onClick={this._onLeftAlignClick.bind(this)}><span className="glyphicon glyphicon-align-left"></span></button></span>
+          <span title="Align Center"><button className="styleButton" type="button" onClick={this._onCenterAlignClick.bind(this)}><span className="glyphicon glyphicon-align-center"></span></button></span>
+          <span title="Align Right"><button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span className="glyphicon glyphicon-align-right"></span></button></span>
+          <span title="Bullet List"><button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-list"></span></button></span>
+          <span title="Numbered List"><button className="styleButton" type="button"><span className="glyphicon glyphicon-sort-by-order"></span></button></span>
         </div>
         <div className="editor">
           <Editor
