@@ -26,6 +26,9 @@ const styleMap = {
   'SIZE_24': {
     fontSize: 24
   },
+  'SIZE_48': {
+    fontSize: 48
+  },
   'RED': {
     color: 'red'
   }
@@ -54,11 +57,33 @@ class MyEditor extends React.Component {
   }
 
   _onFontSizeClick() {
-    var newSize = document.getElementById('textSizePicker').value;
-    console.log(newSize)
+    var size = document.getElementById('textSizePicker').value;
+    console.log(size)
+    var command;
+    if (size === "10") {
+      command = 'SIZE_10'
+    } else if (size === "12") {
+      command = 'SIZE_12'
+    } else if (size === "16") {
+      command = 'SIZE_16'
+    } else if (size === "20") {
+      command = 'SIZE_20'
+    } else if (size === "24") {
+      command = 'SIZE_24'
+    } else if (size === "48") {
+      command = 'SIZE_48'
+    }
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
-      'SIZE_16'
+      command
+    ));
+  }
+
+  _onColorClick() {
+    var color = document.getElementById('colorPicker').value;
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'RED'
     ));
   }
 
@@ -125,11 +150,6 @@ class MyEditor extends React.Component {
     ));
   }
 
-  blockRenderer(block) {
-    console.log('type: ', block.getType())
-  }
-
-
   render() {
     return (
       <div style={{ margin: "20px" }}>
@@ -142,12 +162,13 @@ class MyEditor extends React.Component {
               className="styleButton glyphicon glyphicon-text-size"
               type="button"
               onChange={this._onFontSizeClick.bind(this)}>
-              <select className="textSizePicker">
+              <select id="textSizePicker" defaultValue="12">
                 <option value="10">10</option>
                 <option value="12">12</option>
-                <option value="14">16</option>
+                <option value="16">16</option>
                 <option value="20">20</option>
                 <option value="24">24</option>
+                <option value="48">48</option>
               </select>
             </button>
           </span>
