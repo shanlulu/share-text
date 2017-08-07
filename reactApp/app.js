@@ -16,7 +16,7 @@ class MyEditor extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div className="container">
         <p>Let's get it started, ah!</p>
         <Editor editorState={this.state.editorState} onChange={this.onChange} />
       </div>
