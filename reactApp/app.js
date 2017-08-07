@@ -30,13 +30,6 @@ class MyEditor extends React.Component {
     ));
   }
 
-  _onItalicClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "ITALIC"
-    ));
-  }
-
   _onUnderlineClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
@@ -50,6 +43,21 @@ class MyEditor extends React.Component {
       'STRIKETHROUGH'
     ));
   }
+
+  _onULClick() {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState,
+      'unordered-list-item'
+    ));
+  }
+
+  _onOLClick() {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState,
+      'ordered-list-item'
+    ));
+  }
+
 
   render() {
     return (
@@ -66,8 +74,8 @@ class MyEditor extends React.Component {
           <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Left"><span className="glyphicon glyphicon-align-left"></span></span></button>
           <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Center"><span className="glyphicon glyphicon-align-center"></span></span></button>
           <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Right"><span className="glyphicon glyphicon-align-right"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Bullet List"><span className="glyphicon glyphicon-list"></span></span></button>
-          <button className="styleButton" type="button"><span title="Numbered List"><span className="glyphicon glyphicon-sort-by-order"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onULClick.bind(this)}><span title="Bullet List"><span className="glyphicon glyphicon-list"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onOLClick.bind(this)}><span title="Numbered List"><span className="glyphicon glyphicon-sort-by-order"></span></span></button>
         </div>
         <div className="editor">
           <Editor editorState={this.state.editorState} onChange={this.onChange} />
