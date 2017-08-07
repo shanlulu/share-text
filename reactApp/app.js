@@ -29,9 +29,27 @@ const styleMap = {
   'SIZE_48': {
     fontSize: 48
   },
+  'BLACK': {
+    color: 'black'
+  },
   'RED': {
     color: 'red'
-  }
+  },
+  'ORANGE': {
+    color: 'orange'
+  },
+  'YELLOW': {
+    color: 'yellow'
+  },
+  'GREEN': {
+    color: 'green'
+  },
+  'BLUE': {
+    color: 'blue'
+  },
+  'PURPLE': {
+    color: 'purple'
+  },
 }
 
 const blockRenderMap = Immutable.Map({
@@ -80,10 +98,26 @@ class MyEditor extends React.Component {
   }
 
   _onColorClick() {
-    var color = document.getElementById('colorPicker').value;
+    var color = document.getElementById('textColorPicker').value;
+    var command;
+    if (color === "black") {
+      command = 'BLACK'
+    } else if (color === "red") {
+      command = 'RED'
+    } else if (color === "orange") {
+      command = 'ORANGE'
+    } else if (color === "yellow") {
+      command = 'YELLOW'
+    } else if (color === "green") {
+      command = 'GREEN'
+    } else if (color === "blue") {
+      command = 'BLUE'
+    } else if (color === "purple") {
+      command = 'PURPLE'
+    }
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
-      'RED'
+      command
     ));
   }
 
@@ -178,8 +212,8 @@ class MyEditor extends React.Component {
             <button
               className="styleButton glyphicon glyphicon-tint"
               type="button"
-              onChange={this._onFontSizeClick.bind(this)}>
-              <select className="textColorPicker" defaultValue="black">
+              onChange={this._onColorClick.bind(this)}>
+              <select id="textColorPicker" defaultValue="black">
                 <option value="black">black</option>
                 <option value="red">red</option>
                 <option value="orange">orange</option>
