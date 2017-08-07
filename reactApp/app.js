@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+import {Editor, EditorState} from 'draft-js';
 
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
@@ -7,5 +8,27 @@ var ReactDOM = require('react-dom');
 // .then(text => console.log(text))
 // .catch(err => {throw err})
 
-ReactDOM.render(<p>React lives!</p>,
-   document.getElementById('root'));
+class MyEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {editorState: EditorState.createEmpty()};
+    this.onChange = (editorState) => this.setState({editorState});
+  }
+  render() {
+    return (
+      <div>
+        <p>Let's get it started, ah!</p>
+        <Editor editorState={this.state.editorState} onChange={this.onChange} />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <MyEditor />,
+  document.getElementById('root')
+);
+
+
+// ReactDOM.render(<p>React lives!</p>,
+//    document.getElementById('root'));
