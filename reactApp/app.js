@@ -61,7 +61,7 @@ class MyEditor extends React.Component {
       'SIZE_16'
     ));
   }
-  
+
   _onStrikeClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
@@ -77,12 +77,6 @@ class MyEditor extends React.Component {
     ));
   }
 
-  _onItalicClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "ITALIC"
-    ));
-  }
 
   _onUnderlineClick() {
     this.onChange(RichUtils.toggleInlineStyle(
