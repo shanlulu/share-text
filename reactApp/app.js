@@ -58,7 +58,15 @@ class MyEditor extends React.Component {
         <p>Document ID: testID</p>
         <button type="button" className="saveButton">Save Changes</button>
         <div className="toolbar">
-          <span title="Change Text Size"><button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-text-size"></span></button></span>
+          <span title="Change Text Size"><button className="styleButton glyphicon glyphicon-text-size" type="button"> <select>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="24">24</option>
+          </select></button></span>
           <span title="Change Text Color"><button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-tint"></span></button></span>
           <span title="Bold"><button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span className="glyphicon glyphicon-bold"></span></button></span>
           <span title="Italicize"><button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span className="glyphicon glyphicon-italic"></span></button></span>
