@@ -76,7 +76,6 @@ class MyEditor extends React.Component {
 
   _onFontSizeClick() {
     var size = document.getElementById('textSizePicker').value;
-    console.log(size)
     var command;
     if (size === "10") {
       command = 'SIZE_10'
@@ -188,7 +187,7 @@ class MyEditor extends React.Component {
     return (
       <div style={{ margin: "20px" }} className="body">
         <p className="docHeader">Edit your docs:</p>
-        <p>Document ID: testID</p>
+        <p className="docID">Document ID: testID</p>
         <button type="button" className="saveButton">Save Changes</button>
         <div className="toolbar">
           <span title="Change Text Size">
