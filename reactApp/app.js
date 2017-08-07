@@ -151,7 +151,22 @@ class MyEditor extends React.Component {
               </select>
             </button>
           </span>
-          <span title="Change Text Color"><button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span className="glyphicon glyphicon-tint"></span></button></span>
+          <span title="Change Text Color">
+            <button
+              className="styleButton glyphicon glyphicon-tint"
+              type="button"
+              onChange={this._onFontSizeClick.bind(this)}>
+              <select className="textColorPicker" defaultValue="black">
+                <option value="black">black</option>
+                <option value="red">red</option>
+                <option value="orange">orange</option>
+                <option value="yellow">yellow</option>
+                <option value="green">green</option>
+                <option value="blue">blue</option>
+                <option value="purple">purple</option>
+              </select>
+            </button>
+          </span>
           <span title="Bold"><button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span className="glyphicon glyphicon-bold"></span></button></span>
           <span title="Italicize"><button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span className="glyphicon glyphicon-italic"></span></button></span>
           <span title="Underline"><button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span className="glyphicon glyphicon-text-color"></span></button></span>
