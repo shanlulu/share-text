@@ -1,0 +1,33 @@
+.editor{
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  height: 300px;
+}
+.toolbar{
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  margin-bottom: 5px
+}
+.docHeader{
+  font-size: 30px;
+  text-align: center
+}
+.saveButton{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: white;
+  border: 1px solid blue;
+  border-radius: 5px;
+  color: blue;
+  height: 40px;
+  text-align: center;
+}
+.styleButton{
+  text-align: center;
+  border-radius: 2px;
+  background-color: white;
+  border: 1px solid black;
+  margin: 2px;
+}
