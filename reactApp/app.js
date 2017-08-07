@@ -69,6 +69,7 @@ class MyEditor extends React.Component {
     ));
   }
 
+
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
@@ -76,17 +77,18 @@ class MyEditor extends React.Component {
     ));
   }
 
-  _onItalicClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "ITALIC"
-    ));
-  }
 
   _onUnderlineClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "UNDERLINE"
+    ));
+  }
+
+  _onItalicClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      "ITALIC"
     ));
   }
 
