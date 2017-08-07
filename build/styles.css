@@ -35,3 +35,15 @@ body {
   border: 1px solid black;
   margin: 2px;
 }
+
+.center {
+  text-align: center;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
