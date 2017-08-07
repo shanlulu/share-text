@@ -17,19 +17,13 @@ class MyEditor extends React.Component {
     this.toggleBlockType = (type) => this._toggleBlockType(type);
   }
 
-  // _onStrikeClick() {
-  //   this.onChange(RichUtils.toggleInlineStyle(
-  //     this.state.editorState,
-  //     'STRIKETHROUGH'
-  //   ));
-  // }
-  //
   _onStrikeClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       'STRIKETHROUGH'
     ));
   }
+
 
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
@@ -42,6 +36,13 @@ class MyEditor extends React.Component {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "UNDERLINE"
+    ));
+  }
+
+  _onItalicClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      "ITALIC"
     ));
   }
 
