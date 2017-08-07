@@ -14,19 +14,27 @@ class MyEditor extends React.Component {
     super(props);
     this.state = {editorState: EditorState.createEmpty()};
     this.onChange = (editorState) => this.setState({editorState});
+    this.toggleBlockType = (type) => this._toggleBlockType(type);
+  }
+
+  // _onStrikeClick() {
+  //   this.onChange(RichUtils.toggleInlineStyle(
+  //     this.state.editorState,
+  //     'STRIKETHROUGH'
+  //   ));
+  // }
+  //
+  _onStrikeClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'STRIKETHROUGH'
+    ));
   }
 
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "BOLD"
-    ));
-  }
-
-  _onItalicClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "ITALIC"
     ));
   }
 
@@ -44,10 +52,24 @@ class MyEditor extends React.Component {
     ));
   }
 
-  _onStrikeClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
+  _onLeftAlignClick() {
+    this.onChange(RichUtils.toggleBlockType(
       this.state.editorState,
-      'STRIKETHROUGH'
+      "ALIGN-LEFT"
+    ));
+  }
+
+  _onCenterAlignClick() {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState,
+      "ALIGN-CENTER"
+    ));
+  }
+
+  _onRightAlignClick() {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState,
+      "ALIGN-RIGHT"
     ));
   }
 
@@ -63,14 +85,18 @@ class MyEditor extends React.Component {
           <button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span title="Bold"><span className="glyphicon glyphicon-bold"></span></span></button>
           <button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span title="Italicize"><span className="glyphicon glyphicon-italic"></span></span></button>
           <button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span title="Underline"><span className="glyphicon glyphicon-text-color"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Left"><span className="glyphicon glyphicon-align-left"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Center"><span className="glyphicon glyphicon-align-center"></span></span></button>
-          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Align Right"><span className="glyphicon glyphicon-align-right"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onLeftAlignClick.bind(this)}><span title="Align Left"><span className="glyphicon glyphicon-align-left"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onCenterAlignClick.bind(this)}><span title="Align Center"><span className="glyphicon glyphicon-align-center"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span title="Align Right"><span className="glyphicon glyphicon-align-right"></span></span></button>
           <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Bullet List"><span className="glyphicon glyphicon-list"></span></span></button>
-          <button className="styleButton" type="button"><span title="Numbered List"><span className="glyphicon glyphicon-sort-by-order"></span></span></button>
+          <button className="styleButton" type="button" onClick={this._onStrikeClick.bind(this)}><span title="Numbered List"><span className="glyphicon glyphicon-sort-by-order"></span></span></button>
         </div>
         <div className="editor">
-          <Editor editorState={this.state.editorState} onChange={this.onChange} />
+          <Editor
+            editorState={this.state.editorState}
+            onChange={this.onChange}
+            placeholder="Enter your text below"
+          />
         </div>
       </div>
     );
@@ -81,7 +107,3 @@ ReactDOM.render(
   <MyEditor />,
   document.getElementById('root')
 );
-
-
-// ReactDOM.render(<p>React lives!</p>,
-//    document.getElementById('root'));
