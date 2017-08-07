@@ -1,11 +1,12 @@
-body {
-  background-color: #f4b342;
-}
+/*.body {
+  background-color: #94B0DA;
+}*/
 
 .editor{
-  border: 1px solid black;
+  border: 1px solid #505A5B;
   border-radius: 5px;
   padding: 5px;
+  background-color: #DCEDFF;
   /*height: 300px;*/
 }
 .toolbar{
@@ -22,18 +23,25 @@ body {
   margin-top: 5px;
   margin-bottom: 5px;
   background-color: white;
-  border: 1px solid blue;
+  border: 1px solid #505A5B;
   border-radius: 5px;
-  color: blue;
+  color: #505A5B;
   height: 40px;
   text-align: center;
 }
 .styleButton{
   text-align: center;
   border-radius: 2px;
-  background-color: white;
-  border: 1px solid black;
-  margin: 2px;
+  background-color: #DCEDFF;
+  border: 1px solid #505A5B;
+  margin: 3px;
+  padding: 4px;
+  min-width: 30px;
+  color: #505A5B;
+}
+
+.drop {
+  margin-left: 3px;
 }
 
 .center {

@@ -128,14 +128,12 @@ class MyEditor extends React.Component {
     ));
   }
 
-
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "BOLD"
     ));
   }
-
 
   _onUnderlineClick() {
     this.onChange(RichUtils.toggleInlineStyle(
@@ -188,7 +186,7 @@ class MyEditor extends React.Component {
 
   render() {
     return (
-      <div style={{ margin: "20px" }}>
+      <div style={{ margin: "20px" }} className="body">
         <p className="docHeader">Edit your docs:</p>
         <p>Document ID: testID</p>
         <button type="button" className="saveButton">Save Changes</button>
@@ -198,7 +196,7 @@ class MyEditor extends React.Component {
               className="styleButton glyphicon glyphicon-text-size"
               type="button"
               onChange={this._onFontSizeClick.bind(this)}>
-              <select id="textSizePicker" defaultValue="12">
+              <select id="textSizePicker" className="drop" defaultValue="12">
                 <option value="10">10</option>
                 <option value="12">12</option>
                 <option value="16">16</option>
@@ -213,7 +211,7 @@ class MyEditor extends React.Component {
               className="styleButton glyphicon glyphicon-tint"
               type="button"
               onChange={this._onColorClick.bind(this)}>
-              <select id="textColorPicker" defaultValue="black">
+              <select id="textColorPicker" className="drop" defaultValue="black">
                 <option value="black">black</option>
                 <option value="red">red</option>
                 <option value="orange">orange</option>
