@@ -25,8 +25,6 @@ function keyBindingFn(e: SyntheticKeyboardEvent): string {
     return 'underline';
   } else if (e.keyCode === 37 && hasCommandModifier(e)) {
     return 'leftAlign';
-  } else if (e.keyCode === 38 && hasCommandModifier(e)) {
-    return 'centerAlign';
   } else if (e.keyCode === 39 && hasCommandModifier(e)) {
     return 'rightAlign';
   }
@@ -248,12 +246,6 @@ class DocEditor extends React.Component {
       this.onChange(RichUtils.toggleBlockType(
         this.state.editorState,
         "ALIGN_LEFT"
-      ));
-      return 'handled';
-    } else if (command === 'centerAlign') {
-      this.onChange(RichUtils.toggleBlockType(
-        this.state.editorState,
-        "ALIGN_CENTER"
       ));
       return 'handled';
     } else if (command === 'rightAlign') {
