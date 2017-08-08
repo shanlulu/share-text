@@ -188,6 +188,17 @@ app.post('/docauth2', function(req, res) {
   })
 })
 
+app.get('/getdocs', function(req, res) {
+  Doc.find({}, function(err, docs) {
+    if (err) {
+      console.log("Error fetching docs", err)
+    } else {
+      var id = req.user._id
+      res.send({docs, id})
+    }
+  })
+})
+
 
 app.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!')
