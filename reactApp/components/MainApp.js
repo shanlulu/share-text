@@ -22,28 +22,6 @@ class MainApp extends React.Component {
     // })
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    // this.setState({
-    //   items: this.state.items.concat({
-    //     text: this.state.text,
-    //     completed: false,
-    //     _id: this.state.text + Date.now()
-    //   }),
-    //   text: ''
-    // }, () => {
-    //   axios.post(dbUrl+'/add', {
-    //     todoItem: this.state.items[this.state.items.length - 1]
-    //   })
-    //   .then((response) => {
-    //     console.log("success posting")
-    //   })
-    //   .catch((error) => {
-    //     console.log("error posting")
-    //   })
-    // })
-  }
-
   render() {
     return (
       <BrowserRouter>
