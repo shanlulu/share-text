@@ -8,7 +8,6 @@ import { Redirect } from 'react-router-dom'
 class DocLibrary extends React.Component {
   constructor(props) {
     super(props)
-    // console.log('props:', props, )
     this.state = {
       owned: [],
       collab: [],
