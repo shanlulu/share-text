@@ -183,7 +183,7 @@ class DocEditor extends React.Component {
       <div>
         <div style={{ margin: "20px" }} className="body">
           <p className="docHeader">Edit your doc:</p>
-          <p className="docID">Document ID: testID</p>
+          <p className="docID">Document ID: {this.props.match.params.docId}</p>
           <button type="button" className="shareButton">Share Document</button><br></br>
           <button type="button" className="saveButton">Save Changes</button>
           <div className="toolbar">

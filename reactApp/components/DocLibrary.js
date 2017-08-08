@@ -15,6 +15,7 @@ class DocLibrary extends React.Component {
       title: '',
       password: '',
       redirect: false,
+      docId: ''
     }
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -59,13 +60,15 @@ class DocLibrary extends React.Component {
       }
     })
     .then(response => {
-      this.setState({modalIsOpen: false, redirect: true})
+      this.setState({modalIsOpen: false, redirect: true, docId: response.data.newDoc._id})
+      console.log('IN STATE', response.data.newDoc._id);
     })
   }
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to="editor"/>
+      var url = "/editor/" + this.state.docId;
+      return <Redirect to={url}/>
     }
     return (
       <div style={{ margin: "20px" }} className="body">

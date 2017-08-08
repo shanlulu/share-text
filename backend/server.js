@@ -141,7 +141,10 @@ app.post('/newdoc', function(req, res) {
               res.status(404).send('ERROR');
             } else {
               console.log('SAVED USER', newUser);
-              res.status(200).send('POST NEW DOC SUCCESS');
+              res.status(200).send({
+                newDoc: doc,
+                newUser: newUser
+              });
             }
           })
         }
