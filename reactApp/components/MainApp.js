@@ -24,8 +24,8 @@ class MainApp extends React.Component {
           <h5 className="main">Welcome!</h5>
           <Switch>
             <Route path="/register" component={Register}/>
-            <Route path="/login" component={Login} login={this.state.login}/>
-            <Route path="/logout" component={Login} login={this.state.login}/>
+            <Route path="/login" component={Login}/>
+            <Route path="/logout" component={Login}/>
             <Route path="/library" component={DocLibrary}/>
             <Route path="/editor" component={DocEditor} />
           </Switch>

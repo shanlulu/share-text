@@ -64,6 +64,7 @@ const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 class DocEditor extends React.Component {
   constructor(props) {
     super(props);
+    console.log('props', props.data, props)
     this.state = {editorState: EditorState.createEmpty()};
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleBlockType = (type) => this._toggleBlockType(type);
@@ -183,7 +184,7 @@ class DocEditor extends React.Component {
       <div>
         <div style={{ margin: "20px" }} className="body">
           <p className="docHeader">Edit your doc:</p>
-          <p className="docID">Document ID: testID</p>
+          <p className="docID">Document ID: </p>
           <button type="button" className="shareButton">Share Document</button><br></br>
           <button type="button" className="saveButton">Save Changes</button>
           <div className="toolbar">
