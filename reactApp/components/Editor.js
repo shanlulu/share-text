@@ -1,15 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  DefaultDraftBlockRenderMap,
-  getDefaultKeyBinding,
-  KeyBindingUtil,
-  ContentState
-} from 'draft-js';
+import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil, ContentState, convertFromRaw, convertToRaw, createWithContent } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
 import axios from 'axios'
@@ -25,8 +17,6 @@ function keyBindingFn(e: SyntheticKeyboardEvent): string {
     return 'underline';
   } else if (e.keyCode === 37 && hasCommandModifier(e)) {
     return 'leftAlign';
-  } else if (e.keyCode === 38 && hasCommandModifier(e)) {
-    return 'centerAlign';
   } else if (e.keyCode === 39 && hasCommandModifier(e)) {
     return 'rightAlign';
   }
@@ -249,12 +239,6 @@ class DocEditor extends React.Component {
         "ALIGN_LEFT"
       ));
       return 'handled';
-    } else if (command === 'centerAlign') {
-      this.onChange(RichUtils.toggleBlockType(
-        this.state.editorState,
-        "ALIGN_CENTER"
-      ));
-      return 'handled';
     } else if (command === 'rightAlign') {
       this.onChange(RichUtils.toggleBlockType(
         this.state.editorState,
@@ -265,9 +249,27 @@ class DocEditor extends React.Component {
     return 'not-handled';
   }
 
-  setEditorContent(text) {
-    const contentState = ContentState.createFromText(text);
-    const editorState = EditorState.push(this.state.editorState, contentState);
+  saveEditorContent() {
+    const rawDraftContentState = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent()) );
+    console.log('RAW', rawDraftContentState);
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/savedoc',
+      data: {
+        id: this.state.doc._id,
+        content: rawDraftContentState
+      }
+    })
+    .then(updatedDoc => {
+      console.log('SAVED', updatedDoc)
+      this.setState({doc: updatedDoc.data})
+    })
+  }
+
+  setEditorContent (rawDraftContentState) {
+    console.log('RAW', rawDraftContentState);
+    const contentState = convertFromRaw( JSON.parse( rawDraftContentState) );
+    const editorState = EditorState.createWithContent(contentState);
     this.setState({ editorState });
   }
 
@@ -279,7 +281,7 @@ class DocEditor extends React.Component {
 
           <p className="docID">Document ID: {this.state.doc._id}</p>
           <button type="button" className="shareButton">Share Document</button><br></br>
-          <button type="button" className="saveButton">Save Changes</button>
+          <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
           <div className="toolbar">
             <span title="Change Text Size">
               <button
@@ -343,5 +345,4 @@ class DocEditor extends React.Component {
     );
   }
 }
-
 export default DocEditor;
