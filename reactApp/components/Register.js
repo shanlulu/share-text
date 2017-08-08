@@ -10,6 +10,19 @@ class Register extends React.Component {
     super(props)
   }
 
+  // handleSubmit() {
+  //   axios({
+  //     method: 'post',
+  //     url: 'http://localhost:3000/register',
+  //     data: {
+  //       username:
+  //       password:
+  //     }
+  //   })
+  //     .then(response => {
+  //     })
+  // }
+
   render() {
     return (
       <div>
