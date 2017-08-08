@@ -8,8 +8,10 @@ import { Redirect } from 'react-router-dom'
 class DocLibrary extends React.Component {
   constructor(props) {
     super(props)
+    // console.log('props:', props, )
     this.state = {
-      documents: [],
+      owned: [],
+      collab: [],
       modalIsOpen: false,
       title: '',
       password: '',
@@ -21,6 +23,10 @@ class DocLibrary extends React.Component {
     this.createDocument = this.createDocument.bind(this);
     this.inputChangeTitle = this.inputChangeTitle.bind(this);
     this.inputChangePassword = this.inputChangePassword.bind(this);
+  }
+
+  componentDidMount() {
+
   }
 
   openModal() {
@@ -58,7 +64,6 @@ class DocLibrary extends React.Component {
     })
   }
 
-
   render() {
     if (this.state.redirect) {
       return <Redirect to="editor"/>
@@ -75,8 +80,14 @@ class DocLibrary extends React.Component {
           </button>
         </form>
         <ul className="docList">
-          <p className="libraryHeader">Choose a doc to edit</p>
-          {this.state.documents.map(doc => {
+          <p className="libraryHeader">Docs you own</p>
+          {this.state.owned.map(doc => {
+            return (<li key={doc} className="doc">{doc}</li>)
+          })}
+        </ul>
+        <ul className="docList">
+          <p className="libraryHeader">Docs you collaborate on</p>
+          {this.state.collab.map(doc => {
             return (<li key={doc} className="doc">{doc}</li>)
           })}
         </ul>

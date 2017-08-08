@@ -157,3 +157,7 @@
   border-radius: 3px;
   padding: 5px;
 }
+.error {
+  color: red;
+  font-family: 'Saira', sans-serif;
+}

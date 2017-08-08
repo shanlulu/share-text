@@ -12,7 +12,8 @@ class Login extends React.Component {
     this.state = {
       name: '',
       password: '',
-      redirect: false
+      redirect: false,
+      valid: true
     }
   }
 
@@ -29,8 +30,15 @@ class Login extends React.Component {
     .then(response => {
       if (response.data === "SUCCESS") {
         // this.props.login = true;
-        this.setState({redirect: true})
+        console.log('success')
+        this.setState({redirect: true, valid: true})
+      } else {
+        this.setState({valid: false})
       }
+    })
+    .catch(err => {
+      this.setState({valid: false})
+      console.log('Error logging in', err)
     })
   }
 
@@ -50,6 +58,7 @@ class Login extends React.Component {
       <div>
         <div className="body">
           <p className="docHeader">Login!</p>
+          {(!this.state.valid) ? <p className="error">Invalid Login</p> : null}
           <form onSubmit={(e) => this.handleSubmit(e)}>
             <div className="form-group">
               <label>Username</label>
@@ -59,7 +68,8 @@ class Login extends React.Component {
                 name="name"
                 className="form-control registerInput"
                 placeholder="Enter Username"
-                value={this.state.name}></input>
+                value={this.state.name}
+                required></input>
             </div>
             <div className="form-group">
               <label>Password</label>
@@ -69,7 +79,8 @@ class Login extends React.Component {
                 name="password"
                 className="form-control registerInput"
                 placeholder="Password"
-                value={this.state.password}></input>
+                value={this.state.password}
+                required></input>
             </div>
             <button className="saveButton" type="submit">
               Login
@@ -87,6 +98,5 @@ class Login extends React.Component {
     )
   }
 }
-
 
 export default Login;
