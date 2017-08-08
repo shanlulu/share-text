@@ -1,7 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap} from 'draft-js';
+import DocLibrary from './DocLibrary.js'
+import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
 import Immutable from 'immutable'
+import { Link, Route } from 'react-router-dom'
 
 const styleMap = {
   'SIZE_10': {
@@ -178,62 +180,69 @@ class DocEditor extends React.Component {
 
   render() {
     return (
-      <div style={{ margin: "20px" }} className="body">
-        <p className="docHeader">Edit your doc:</p>
-        <p className="docID">Document ID: testID</p>
-        <button type="button" className="shareButton">Share Document</button><br></br>
-        <button type="button" className="saveButton">Save Changes</button>
-        <div className="toolbar">
-          <span title="Change Text Size">
-            <button
-              className="styleButton glyphicon glyphicon-text-size"
-              type="button"
-              onChange={this._onFontSizeClick.bind(this)}>
-              <select id="textSizePicker" className="drop" defaultValue="12">
-                <option value="10">10</option>
-                <option value="12">12</option>
-                <option value="16">16</option>
-                <option value="20">20</option>
-                <option value="24">24</option>
-                <option value="48">48</option>
-              </select>
+      <div>
+        <div style={{ margin: "20px" }} className="body">
+          <p className="docHeader">Edit your doc:</p>
+          <p className="docID">Document ID: testID</p>
+          <button type="button" className="shareButton">Share Document</button><br></br>
+          <button type="button" className="saveButton">Save Changes</button>
+          <div className="toolbar">
+            <span title="Change Text Size">
+              <button
+                className="styleButton glyphicon glyphicon-text-size"
+                type="button"
+                onChange={this._onFontSizeClick.bind(this)}>
+                <select id="textSizePicker" className="drop" defaultValue="12">
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                  <option value="16">16</option>
+                  <option value="20">20</option>
+                  <option value="24">24</option>
+                  <option value="48">48</option>
+                </select>
+              </button>
+            </span>
+            <span title="Change Text Color">
+              <button
+                className="styleButton glyphicon glyphicon-tint"
+                type="button"
+                onChange={this._onColorClick.bind(this)}>
+                <select id="textColorPicker" className="drop" defaultValue="black">
+                  <option value="black">black</option>
+                  <option value="red">red</option>
+                  <option value="orange">orange</option>
+                  <option value="yellow">yellow</option>
+                  <option value="green">green</option>
+                  <option value="blue">blue</option>
+                  <option value="purple">purple</option>
+                </select>
+              </button>
+            </span>
+            <span title="Bold"><button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span className="glyphicon glyphicon-bold"></span></button></span>
+            <span title="Italicize"><button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span className="glyphicon glyphicon-italic"></span></button></span>
+            <span title="Underline"><button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span className="glyphicon glyphicon-text-color"></span></button></span>
+            <span title="Align Left"><button className="styleButton" type="button" onClick={this._onLeftAlignClick.bind(this)}><span className="glyphicon glyphicon-align-left"></span></button></span>
+            <span title="Align Center"><button className="styleButton" type="button" onClick={this._onCenterAlignClick.bind(this)}><span className="glyphicon glyphicon-align-center"></span></button></span>
+            <span title="Align Right"><button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span className="glyphicon glyphicon-align-right"></span></button></span>
+            <span title="Bullet List"><button className="styleButton" type="button" onClick={this._onULClick.bind(this)}><span className="glyphicon glyphicon-list"></span></button></span>
+            <span title="Numbered List"><button className="styleButton" type="button" onClick={this._onOLClick.bind(this)}><span className="glyphicon glyphicon-sort-by-order"></span></button></span>
+          </div>
+          <div className="editor">
+            <Editor
+              customStyleMap={styleMap}
+              editorState={this.state.editorState}
+              onChange={this.onChange}
+              placeholder="Enter your text below"
+              blockRenderMap={extendedBlockRenderMap}
+            />
+          </div>
+          <Link to="/library">
+            <button type="button" className="backButton">
+              Back to Document Library
             </button>
-          </span>
-          <span title="Change Text Color">
-            <button
-              className="styleButton glyphicon glyphicon-tint"
-              type="button"
-              onChange={this._onColorClick.bind(this)}>
-              <select id="textColorPicker" className="drop" defaultValue="black">
-                <option value="black">black</option>
-                <option value="red">red</option>
-                <option value="orange">orange</option>
-                <option value="yellow">yellow</option>
-                <option value="green">green</option>
-                <option value="blue">blue</option>
-                <option value="purple">purple</option>
-              </select>
-            </button>
-          </span>
-          <span title="Bold"><button className="styleButton" type="button" onClick={this._onBoldClick.bind(this)}><span className="glyphicon glyphicon-bold"></span></button></span>
-          <span title="Italicize"><button className="styleButton" type="button" onClick={this._onItalicClick.bind(this)}><span className="glyphicon glyphicon-italic"></span></button></span>
-          <span title="Underline"><button className="styleButton" type="button" onClick={this._onUnderlineClick.bind(this)}><span className="glyphicon glyphicon-text-color"></span></button></span>
-          <span title="Align Left"><button className="styleButton" type="button" onClick={this._onLeftAlignClick.bind(this)}><span className="glyphicon glyphicon-align-left"></span></button></span>
-          <span title="Align Center"><button className="styleButton" type="button" onClick={this._onCenterAlignClick.bind(this)}><span className="glyphicon glyphicon-align-center"></span></button></span>
-          <span title="Align Right"><button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span className="glyphicon glyphicon-align-right"></span></button></span>
-          <span title="Bullet List"><button className="styleButton" type="button" onClick={this._onULClick.bind(this)}><span className="glyphicon glyphicon-list"></span></button></span>
-          <span title="Numbered List"><button className="styleButton" type="button" onClick={this._onOLClick.bind(this)}><span className="glyphicon glyphicon-sort-by-order"></span></button></span>
+          </Link>
         </div>
-        <div className="editor">
-          <Editor
-            customStyleMap={styleMap}
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-            placeholder="Enter your text below"
-            blockRenderMap={extendedBlockRenderMap}
-          />
-        </div>
-        <button type="button" className="backButton">Back to Document Library</button>
+        <Route path="/library" component={DocLibrary} />
       </div>
     );
   }

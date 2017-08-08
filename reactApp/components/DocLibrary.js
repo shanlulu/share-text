@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import DocEditor from './Editor.js';
 import Modal from 'react-modal';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom'
 
 class DocLibrary extends React.Component {
   constructor(props) {
@@ -12,7 +13,8 @@ class DocLibrary extends React.Component {
       modalIsOpen: false,
       title: '',
       password: '',
-      }
+      redirect: false,
+    }
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -34,15 +36,12 @@ class DocLibrary extends React.Component {
   }
 
   inputChangeTitle(e) {
-   this.setState({title: e.target.value})
-   console.log("TITLE: ", this.state.title)
+    this.setState({title: e.target.value})
+  }
 
- }
-
- inputChangePassword(e) {
-  this.setState({password: e.target.value})
-  console.log("PASSWORD: ", this.state.password)
-}
+  inputChangePassword(e) {
+    this.setState({password: e.target.value})
+  }
 
   createDocument(e) {
     e.preventDefault()
@@ -54,14 +53,16 @@ class DocLibrary extends React.Component {
         password: this.state.password
       }
     })
-      .then(response => {
-        console.log("Saved new doc!!")
-      })
-    console.log('HERE: ', this.state.title, this.state.password)
-    }
+    .then(response => {
+      this.setState({modalIsOpen: false, redirect: true})
+    })
+  }
 
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="editor"/>
+    }
     return (
       <div style={{ margin: "20px" }} className="body">
         <p className="docHeader">Your Document Library</p>
@@ -94,18 +95,18 @@ class DocLibrary extends React.Component {
           className={{
             afterOpen: 'modalBody',
           }}
-        >
-          <h2 className="docHeader" ref={subtitle => this.subtitle = subtitle}>Create a new Document</h2>
-          <form onSubmit={(e) => this.createDocument(e)}>
-            <h2 className="modalText ">Give it a name:</h2><input type="text" onChange={(e) => this.inputChangeTitle(e)} className="form-control registerInput" placeholder="Document Title"></input><br></br>
-            <h2 className="modalText">Password:</h2><input type="password" onChange={(e) => this.inputChangePassword(e)} className="form-control registerInput" placeholder="Password"></input><br></br>
-            <input className="saveButton" type="submit" value="Create Document" />
-            <button className="saveButton" onClick={this.closeModal}>cancel</button>
-          </form>
-        </Modal>
-      </div>
-    )
+          >
+            <h2 className="docHeader" ref={subtitle => this.subtitle = subtitle}>Create a new Document</h2>
+            <form onSubmit={(e) => this.createDocument(e)}>
+              <h2 className="modalText ">Give it a name:</h2><input type="text" onChange={(e) => this.inputChangeTitle(e)} className="form-control registerInput" placeholder="Document Title"></input><br></br>
+              <h2 className="modalText">Password:</h2><input type="password" onChange={(e) => this.inputChangePassword(e)} className="form-control registerInput" placeholder="Password"></input><br></br>
+              <input className="saveButton" type="submit" value="Create Document" />
+              <button className="saveButton" onClick={this.closeModal}>cancel</button>
+            </form>
+          </Modal>
+        </div>
+      )
+    }
   }
-}
 
-export default DocLibrary;
+  export default DocLibrary;
