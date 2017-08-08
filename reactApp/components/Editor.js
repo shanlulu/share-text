@@ -1,9 +1,28 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
-import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
+import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
+
+const { hasCommandModifier } = KeyBindingUtil;
+
+function keyBindingFn(e: SyntheticKeyboardEvent): string {
+  if (e.keyCode === 66 && hasCommandModifier(e)) {
+    return 'bold';
+} else if (e.keyCode === 73 && hasCommandModifier(e)) {
+    return 'italicize';
+} else if (e.keyCode === 85 && hasCommandModifier(e)) {
+    return 'underline';
+} else if (e.keyCode === 37 && hasCommandModifier(e)) {
+    return 'leftAlign';
+} else if (e.keyCode === 38 && hasCommandModifier(e)) {
+    return 'centerAlign';
+} else if (e.keyCode === 39 && hasCommandModifier(e)) {
+    return 'rightAlign';
+  }
+  return getDefaultKeyBinding(e);
+}
 
 const styleMap = {
   'SIZE_10': {
@@ -67,6 +86,7 @@ class DocEditor extends React.Component {
     this.state = {editorState: EditorState.createEmpty()};
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleBlockType = (type) => this._toggleBlockType(type);
+    this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
 
   _onFontSizeClick() {
@@ -178,6 +198,47 @@ class DocEditor extends React.Component {
     ));
   }
 
+  handleKeyCommand(command: string): DraftHandleValue {
+        if (command === 'bold') {
+          this.onChange(RichUtils.toggleInlineStyle(
+            this.state.editorState,
+            "BOLD"
+          ));
+          return 'handled';
+      } else if (command === 'italicize') {
+        this.onChange(RichUtils.toggleInlineStyle(
+          this.state.editorState,
+          "ITALIC"
+        ));
+      return 'handled';
+    } else if (command === 'underline') {
+      this.onChange(RichUtils.toggleInlineStyle(
+        this.state.editorState,
+        "UNDERLINE"
+      ));
+    return 'handled';
+  } else if (command === 'leftAlign') {
+      this.onChange(RichUtils.toggleBlockType(
+        this.state.editorState,
+        "ALIGN_LEFT"
+      ));
+      return 'handled';
+    } else if (command === 'centerAlign') {
+      this.onChange(RichUtils.toggleBlockType(
+        this.state.editorState,
+        "ALIGN_CENTER"
+      ));
+    return 'handled';
+  } else if (command === 'rightAlign') {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState,
+      "ALIGN_RIGHT"
+    ));
+    return 'handled';
+    }
+      return 'not-handled';
+    }
+
   render() {
     return (
       <div>
@@ -234,6 +295,8 @@ class DocEditor extends React.Component {
               onChange={this.onChange}
               placeholder="Enter your text below"
               blockRenderMap={extendedBlockRenderMap}
+              keyBindingFn={keyBindingFn}
+              handleKeyCommand={this.handleKeyCommand}
             />
           </div>
           <Link to="/library">
