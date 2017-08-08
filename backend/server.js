@@ -8,6 +8,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models').User;
+var Doc = require('../models').Doc;
 
 var app = express();
 app.use(logger('dev'));
@@ -64,12 +65,7 @@ passport.deserializeUser(function(id, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.get('/register', function(req, res) {
-//   res.send('IN REGISTER');
-// });
-
 app.post('/register', function(req, res) {
-  console.log('IN POST REGISTER');
   var u = new User({
     username: req.body.username,
     password: hashPassword(req.body.password),
@@ -82,7 +78,7 @@ app.post('/register', function(req, res) {
       // res.status(500).redirect('/register');
     } else {
       console.log('SAVED', user);
-      res.send('POST LOGIN SUCCESS');
+      res.send('POST REGISTER SUCCESS');
     }
   });
 });
@@ -99,10 +95,53 @@ app.post('/login', function(req, res, next) {
     })(req, res, next);
   });
 
-// app.get('/logout', function(req, res) {
-//   req.logout();
-//   res.redirect('/login');
-// });
+// router.get('/logout', function(req, res) {
+//     req.logout();
+//     res.redirect('/login');
+//   });
+
+app.post('/newdoc', function(req, res) {
+  var newDoc = new Doc({
+    title: req.body.title,
+    password: hashPassword(req.body.password),
+    owner: req.user._id,
+    collaborators: [req.user._id],
+    content: ""
+  });
+  newDoc.save(function(err, doc) {
+    if (err) {
+      console.log('ERROR', err);
+    } else {
+      console.log('SAVED DOC', doc);
+      User.findById(req.user._id, function(err, user) {
+        if (err) {
+          console.log('ERROR', err);
+        } else {
+          user.ownedDocs.push(doc._id);
+          user.collabDocs.push(doc._id);
+          user.save(function(err, newUser) {
+            if (err) console.log('ERROR', err);
+            else {
+              console.log('SAVED USER', newUser);
+              res.send('POST NEW DOC SUCCESS');
+            }
+          })
+        }
+      })
+    }
+  });
+})
+
+app.post('/auth', function(req, res) {
+  Doc.findById(req.body.docId, function(err, doc) {
+    if (doc.collaborators.includes(req.user._id)) {
+      res.status(200).send("FREE TO VISIT THE DOC!");
+    } else {
+      res.status(500).send("NEED PASSPORT");
+    }
+  })
+})
+
 
 app.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!')

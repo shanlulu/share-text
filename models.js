@@ -16,6 +16,7 @@ var userSchema = mongoose.Schema({
 })
 
 var docSchema = mongoose.Schema({
+  title: String,
   password: String,
   owner: {
     type: mongoose.Schema.Types.ObjectId,
