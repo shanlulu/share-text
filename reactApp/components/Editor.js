@@ -1,15 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  DefaultDraftBlockRenderMap,
-  getDefaultKeyBinding,
-  KeyBindingUtil,
-  ContentState
-} from 'draft-js';
+import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil, ContentState, convertFromRaw, convertToRaw } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
 import axios from 'axios'
