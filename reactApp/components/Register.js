@@ -1,5 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Login from './Login.js';
+import { Link, Route, IndexRoute } from 'react-router-dom';
+import { Switch } from 'react-router'
+
 
 class Register extends React.Component {
   constructor(props) {
@@ -8,18 +12,27 @@ class Register extends React.Component {
 
   render() {
     return (
-      <div className="body">
-        <p className="docHeader">Register!</p>
-        <div className="form-group">
-          <label>Username</label>
-          <input type="text" className="form-control registerInput" placeholder="Enter Username"></input>
+      <div>
+        <div className="body">
+          <p className="docHeader">Register!</p>
+          <form>
+            <div className="form-group">
+              <label>Username</label>
+              <input type="text" className="form-control registerInput" placeholder="Enter Username"></input>
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input type="password" className="form-control registerInput" placeholder="Password"></input>
+            </div>
+            <button className="saveButton" type="button">Register</button>
+          </form>
+          <Link to="/login">
+            <button className="saveButton" type="button">
+              Skip to Login
+            </button>
+          </Link>
         </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input type="password" className="form-control registerInput" placeholder="Password"></input>
-        </div>
-        <button className="saveButton" type="button">Register</button>
-        <button className="saveButton" type="button">Skip to Login</button>
+        <Route path="/login" component={Login} />
       </div>
     )
   }

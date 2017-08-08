@@ -12,6 +12,7 @@
   padding: 5px;
   background-color: #DCEDFF;
   min-height: 300px;
+  font-family: 'Saira', sans-serif;
 }
 .toolbar{
   display: flex;
@@ -24,6 +25,10 @@
 .docHeader{
   font-size: 30px;
   text-align: center;
+  font-family: 'Saira', sans-serif;
+}
+.docID{
+  font-family: 'Saira', sans-serif;
 }
 .saveButton{
   margin-top: 5px;
@@ -68,21 +73,20 @@
   padding: 4px;
   min-width: 30px;
   color: #505A5B;
+  font-family: 'Saira', sans-serif;
 }
-
 .drop {
   margin-left: 3px;
+  font-family: 'Saira', sans-serif;
 }
 
 /* Align text classes */
 .center {
   text-align: center;
 }
-
 .left {
   text-align: left;
 }
-
 .right {
   text-align: right;
 }
@@ -96,14 +100,21 @@
   font-family: 'Saira', sans-serif;
   border-radius: 3px;
 }
+.libraryHeader {
+  font-family: 'Saira', sans-serif;
+  color: #94B0DA;
+  font-size: 18px;
+  text-align: center;
+  /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
+}
 .docList {
-  border: 2px solid #94B0DA;
+  border: 1px solid #505A5B;
   border-radius: 5px;
   padding: 5px;
   margin-left: 0px;
   padding-left: 25px;
   margin-bottom: 10px;
-  background-color: #DCEDFF
+  background-color: #DCEDFF;
 }
 .doc {
   font-family: 'Saira', sans-serif;
@@ -118,4 +129,21 @@
   min-width: 30px;
   color: #505A5B;
   font-family: 'Saira', sans-serif;
+}
+
+/* Registration classes */
+.registerInput {
+  font-family: 'Saira', sans-serif;
+}
+.link {
+  font-size: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.main{
+  background-color: #DCEDFF;
+  border: 2px solid #94B0DA;
+  text-align: center;
+  border-radius: 3px;
+  padding: 5px;
 }
