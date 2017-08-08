@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+var connect = process.env.MONGODB_URI;
+mongoose.connect(connect);
 
 var userSchema = mongoose.Schema({
   username: String,
@@ -26,10 +28,10 @@ var docSchema = mongoose.Schema({
   content: String
 })
 
-User = mongoose.model('User', userSchema)
-Doc = mongoose.model('Doc', docSchema)
+var User = mongoose.model('User', userSchema)
+var Doc = mongoose.model('Doc', docSchema)
 
 module.exports = {
-  User,
-  Doc
+  User: User,
+  Doc: Doc
 }
