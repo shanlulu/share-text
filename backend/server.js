@@ -164,24 +164,21 @@ app.post('/docauth2', function(req, res) {
   Doc.findById(req.body.docId, function(err, doc) {
     if (doc.password === hashPassword(req.body.password)) {
       doc.collaborators.push(req.user._id);
-      doc.save()
-        .then({
-          User.findById(req.user._id, function(err, user) {
-            user.collabDocs.push(req.body.docId);
-            user.save()
-              .then({
-                res.status(200).send("FREE TO VISIT THE DOC!");
-              })
-              .catch(err) {
-                console.log('ERROR', err);
-                res.status(500).send('ERROR');
-              }
-          })
-        })
-        .catch(err) {
+      doc.save(function(err, newdoc) {
+        if (err) {
           console.log('ERROR', err);
           res.status(500).send('ERROR');
+        } else {
+          console.log('SAVED DOC', newdoc);
+          User.findById(req.user._id, function(err, user) {
+            user.collabDocs.push(req.body.docId);
+            user.save(function(err, newuser) {
+              console.log('SAVED USER', newuser);
+              res.status(200).send("FREE TO VISIT THE DOC!");
+            })
+          })
         }
+      })
     } else {
       res.status(500).send("WRONG PASSWORD");
     }
