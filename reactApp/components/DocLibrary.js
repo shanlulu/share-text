@@ -17,6 +17,7 @@ class DocLibrary extends React.Component {
       title: '',
       password: '',
       redirect: false,
+      docId: '',
       sharedDocID: '',
       sharedDocPassword: ''
     }
@@ -104,7 +105,8 @@ class DocLibrary extends React.Component {
       }
     })
     .then(response => {
-      this.setState({modalIsOpen: false, redirect: true})
+      this.setState({modalIsOpen: false, redirect: true, docId: response.data.newDoc._id})
+      console.log('IN STATE', response.data.newDoc._id);
     })
   }
 
@@ -126,7 +128,8 @@ class DocLibrary extends React.Component {
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to="editor"/>
+      var url = "/editor/" + this.state.docId;
+      return <Redirect to={url}/>
     }
     return (
       <div style={{ margin: "20px" }} className="body">
@@ -144,12 +147,12 @@ class DocLibrary extends React.Component {
           {this.state.owned.map(doc => {
             return (
               <div key={doc._id}>
-                <Link to={"/"+doc._id}>
+                <Link to={"/editor/"+doc._id}>
                   <li className="doc">
                     {doc.title}
                   </li>
                 </Link>
-                <Route path={"/"+doc._id} component={DocEditor} />
+                <Route path={"/editor/"+doc._id} component={DocEditor} />
               </div>
             )
           })}
@@ -159,12 +162,12 @@ class DocLibrary extends React.Component {
           {this.state.collab.map(doc => {
             return (
               <div key={doc._id}>
-                <Link to={"/"+doc._id}>
+                <Link to={"/editor/"+doc._id}>
                   <li className="doc">
                     {doc.title}
                   </li>
                 </Link>
-                <Route path={"/"+doc._id} component={DocEditor} />
+                <Route path={"/editor/"+doc._id} component={DocEditor} />
               </div>
             )
           })}

@@ -17,6 +17,20 @@ class MainApp extends React.Component {
     }
   }
 
+  componentDidMount() {
+    axios({
+      method: 'get',
+      url: 'http://localhost:3000/checkuser'
+    })
+    .then(response => {
+      console.log(response)
+      if (response.data) {
+        var login = true;
+        this.setState({login: login})
+      }
+    })
+  }
+
   render() {
     return (
       <HashRouter>
@@ -27,7 +41,7 @@ class MainApp extends React.Component {
             <Route path="/login" component={Login}/>
             <Route path="/logout" component={Login}/>
             <Route path="/library" component={DocLibrary}/>
-            <Route path="/editor" component={DocEditor} />
+            <Route path="/editor/:docId" component={DocEditor}/>
           </Switch>
           <div className="main">
             <Link className="link" to="/login">Log in</Link>
