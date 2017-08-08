@@ -16,7 +16,7 @@ class DocLibrary extends React.Component {
       title: '',
       password: '',
       redirect: false,
-      docId: ''
+      docId: '',
       sharedDocID: '',
       sharedDocPassword: ''
     }

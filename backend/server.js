@@ -65,6 +65,10 @@ passport.deserializeUser(function(id, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/checkuser', function(req, res) {
+  res.send(req.user);
+})
+
 app.post('/register', function(req, res) {
   console.log('IN REGISTER');
   User.findOne({ username: req.body.username}, function(err, user) {
@@ -193,11 +197,13 @@ app.get('/getdocs', function(req, res) {
     if (err) {
       console.log("Error fetching docs", err)
     } else {
-      var id = req.user._id
-      res.send({docs, id})
+      var id = req.user._id;
+      res.send({docs, id});
     }
   })
 })
+
+
 
 
 app.listen(3000, function () {
