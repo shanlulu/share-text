@@ -30,7 +30,6 @@ class DocLibrary extends React.Component {
       url: 'http://localhost:3000/getdocs'
     })
     .then(response => {
-      console.log(response.data)
       var owned = [];
       var collab = [];
       response.data.docs.forEach(doc => {
