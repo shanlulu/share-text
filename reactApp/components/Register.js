@@ -40,19 +40,6 @@ class Register extends React.Component {
     this.setState({password: e.target.value})
   }
 
-  // handleSubmit() {
-  //   axios({
-  //     method: 'post',
-  //     url: 'http://localhost:3000/register',
-  //     data: {
-  //       username:
-  //       password:
-  //     }
-  //   })
-  //     .then(response => {
-  //     })
-  // }
-
   render() {
     if (this.state.redirect) {
       return <Redirect to="/login"/>
