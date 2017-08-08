@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import Register from './Register.js';
 import Login from './Login.js';
 import DocLibrary from './DocLibrary.js';
-import DocEditor from './Editor.js'
+import DocEditor from './Editor.js';
+import { BrowserRouter, Link, Route } from 'react-router-dom';
+import { Switch } from 'react-router'
 
 import axios from 'axios';
 
@@ -44,23 +46,23 @@ class MainApp extends React.Component {
 
   render() {
     return (
-      <div>
-        <Register />
-        <Login />
-        <DocLibrary />
-        <DocEditor
-          // _onFontSizeClick={this.onFontSizeClick.bind(this)}
-          // _onColorClick={this.onColorClick.bind(this)}
-          // _onBoldClick={this.onBoldClick.bind(this)}
-          // _onItalicClick={this.onItalicClick.bind(this)}
-          // _onUnderlineClick={this.onUnderlineClick.bind(this)}
-          // _onLeftAlignClick={this.onLeftAlignClick.bind(this)}
-          // _onCenterAlignClick={this.onCenterAlignClick.bind(this)}
-          // _onRightAlignClick={this.onRightAlignClick.bind(this)}
-          // _onULClick={this.onULClick.bind(this)}
-          // _onOLClick={this.onOLClick.bind(this)}
-        />
-      </div>
+      <BrowserRouter>
+        <div>
+          <h5 className="main">Welcome!</h5>
+          <Switch>
+            <Route path="/register" component={Register}/>
+            <Route path="/login" component={Login} />
+          </Switch>
+          <div className="main">
+            <Link className="link" to="/login">
+              Log in
+            </Link>
+            <Link className="link" to="/register">
+              Register
+            </Link>
+          </div>
+        </div>
+      </BrowserRouter>
     )
   }
 }

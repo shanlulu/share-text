@@ -15,25 +15,24 @@ class DocLibrary extends React.Component {
       <div style={{ margin: "20px" }} className="body">
         <p className="docHeader">Your Document Library</p>
         <form className="form-group" onSubmit={(e) => this.props.handleSubmit(e)}>
-          <input
-            type="text"
-            name="newDoc"
-            placeholder="Create a document"
-            className="input"></input>
           <button
             type="button"
-            className="styleButton">
-            Create
+            className="saveButton">
+            Create New Document
           </button>
         </form>
         <ul className="docList">
+          <p className="libraryHeader">Choose a doc to edit</p>
           {this.state.documents.map(doc => {
             return (<li key={doc} className="doc">{doc}</li>)
           })}
         </ul>
         <form className="form-group" onSubmit={(e) => this.props.handleSubmit(e)}>
-          <input type="text" name="sharedDoc" placeholder="Share a document" className="input"></input>
-          <button type="button" className="styleButton">Share</button>
+          <button
+            type="button"
+            className="saveButton">
+            Add Shared Document
+          </button>
         </form>
       </div>
     )
