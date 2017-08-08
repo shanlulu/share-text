@@ -1,7 +1,11 @@
-/*.body {
-  background-color: #94B0DA;
-}*/
+.body {
+  border: 3px solid #8F91A2;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 20px
+}
 
+/* Document page classes */
 .editor{
   border: 1px solid #505A5B;
   border-radius: 5px;
@@ -11,13 +15,15 @@
 }
 .toolbar{
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   margin-top: 5px;
-  margin-bottom: 5px
+  margin-bottom: 5px;
+  flex-wrap: wrap;
 }
 .docHeader{
   font-size: 30px;
-  text-align: center
+  text-align: center;
 }
 .saveButton{
   margin-top: 5px;
@@ -28,6 +34,30 @@
   color: #505A5B;
   height: 40px;
   text-align: center;
+  font-family: 'Saira', sans-serif;
+  margin-right: 10px;
+}
+.shareButton{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  background-color: white;
+  border: 1px solid #505A5B;
+  border-radius: 5px;
+  color: #505A5B;
+  height: 40px;
+  text-align: center;
+  font-family: 'Saira', sans-serif;
+}
+.backButton{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  background-color: white;
+  border: 1px solid #505A5B;
+  border-radius: 5px;
+  color: #505A5B;
+  height: 40px;
+  text-align: center;
+  font-family: 'Saira', sans-serif;
 }
 .styleButton{
   text-align: center;
@@ -44,6 +74,7 @@
   margin-left: 3px;
 }
 
+/* Align text classes */
 .center {
   text-align: center;
 }
@@ -54,4 +85,37 @@
 
 .right {
   text-align: right;
+}
+
+/* Document Library classes */
+.label {
+  font-family: 'Saira', sans-serif;
+  padding-right: 6px;
+}
+.input {
+  font-family: 'Saira', sans-serif;
+  border-radius: 3px;
+}
+.docList {
+  border: 2px solid #94B0DA;
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 0px;
+  padding-left: 25px;
+  margin-bottom: 10px;
+  background-color: #DCEDFF
+}
+.doc {
+  font-family: 'Saira', sans-serif;
+}
+.styleButton{
+  text-align: center;
+  border-radius: 2px;
+  background-color: #DCEDFF;
+  border: 1px solid #505A5B;
+  margin: 3px;
+  padding: 4px;
+  min-width: 30px;
+  color: #505A5B;
+  font-family: 'Saira', sans-serif;
 }
