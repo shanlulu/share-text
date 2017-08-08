@@ -217,6 +217,27 @@ app.get('/checkuser', function(req, res) {
   res.send(req.user);
 })
 
+app.post('/savedoc', function(req, res) {
+  Doc.findById(req.body.id, function(err, doc) {
+    if (err) {
+      console.log('ERROR', err);
+      res.status(404).send('CANNOT FIND DOC');
+    } else {
+      console.log('FOUND DOC', doc);
+      doc.content = req.body.content;
+      doc.save(function(err, newDoc) {
+        if (err) {
+          console.log('ERROR', err);
+          res.status(404).send('CANNOT SAVE DOC');
+        } else {
+          console.log('SAVED', newDoc);
+          res.status(200).send('SAVED DOC!');
+        }
+      })
+    }
+  })
+})
+
 
 app.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!')
