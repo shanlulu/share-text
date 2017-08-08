@@ -36,7 +36,16 @@ class MainApp extends React.Component {
           <Route path="/library" component={DocLibrary} />
           <Route path="/editor" component={DocEditor} />
           {/* </Switch> */}
-
+          {/* {this.state.login ? return ( */}
+              <div className="main">
+                <Link className="link" to="/login">
+                  Log in
+                </Link>
+                <Link className="link" to="/register">
+                  Register
+                </Link>
+              </div>
+            {/* ) : return (<div></div>) } */}
         </div>
       </BrowserRouter>
     )
