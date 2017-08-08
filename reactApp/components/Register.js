@@ -1,13 +1,43 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Login from './Login.js';
-import { Link, Route, IndexRoute } from 'react-router-dom';
-import { Switch } from 'react-router'
-
+import { Link, Route, Redirect } from 'react-router-dom';
+import { Switch } from 'react-router';
+import axios from 'axios'
 
 class Register extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      name: '',
+      password: '',
+      redirect: false
+    }
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/register',
+      data: {
+        username: this.state.name,
+        password: this.state.password
+      }
+    })
+    .then(response => {
+      if (response.status === 200) {
+        this.setState({redirect: true})
+      }
+    })
+  }
+
+  handleChangeName(e) {
+    this.setState({name: e.target.value})
+  }
+
+  handleChangePass(e) {
+    this.setState({password: e.target.value})
   }
 
   // handleSubmit() {
@@ -24,20 +54,39 @@ class Register extends React.Component {
   // }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/login"/>
+    }
     return (
       <div>
         <div className="body">
           <p className="docHeader">Register!</p>
-          <form>
+          <form onSubmit={(e) => this.handleSubmit(e)}>
             <div className="form-group">
               <label>Username</label>
-              <input type="text" className="form-control registerInput" placeholder="Enter Username"></input>
+              <input
+                onChange={(e) => this.handleChangeName(e)}
+                type="text"
+                name="name"
+                className="form-control registerInput"
+                placeholder="Enter Username"
+                value={this.state.name}
+                required></input>
             </div>
             <div className="form-group">
               <label>Password</label>
-              <input type="password" className="form-control registerInput" placeholder="Password"></input>
+              <input
+                onChange={(e) => this.handleChangePass(e)}
+                type="password"
+                name="password"
+                className="form-control registerInput"
+                placeholder="Password"
+                value={this.state.password}
+                required></input>
             </div>
-            <button className="saveButton" type="button">Register</button>
+            <button className="saveButton" type="submit">
+              Register
+            </button>
           </form>
           <Link to="/login">
             <button className="saveButton" type="button">

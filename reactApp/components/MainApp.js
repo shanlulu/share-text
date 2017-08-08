@@ -13,6 +13,9 @@ import axios from 'axios';
 class MainApp extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      login: false
+    }
   }
 
   componentDidMount() {
@@ -22,45 +25,27 @@ class MainApp extends React.Component {
     // })
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    // this.setState({
-    //   items: this.state.items.concat({
-    //     text: this.state.text,
-    //     completed: false,
-    //     _id: this.state.text + Date.now()
-    //   }),
-    //   text: ''
-    // }, () => {
-    //   axios.post(dbUrl+'/add', {
-    //     todoItem: this.state.items[this.state.items.length - 1]
-    //   })
-    //   .then((response) => {
-    //     console.log("success posting")
-    //   })
-    //   .catch((error) => {
-    //     console.log("error posting")
-    //   })
-    // })
-  }
-
   render() {
     return (
       <BrowserRouter>
         <div>
           <h5 className="main">Welcome!</h5>
-          <Switch>
-            <Route path="/register" component={Register}/>
-            <Route path="/login" component={Login} />
-          </Switch>
-          <div className="main">
-            <Link className="link" to="/login">
-              Log in
-            </Link>
-            <Link className="link" to="/register">
-              Register
-            </Link>
-          </div>
+          {/* <Switch> */}
+          <Route path="/register" component={Register}/>
+          <Route path="/login" component={Login} login={this.state.login}/>
+          <Route path="/library" component={DocLibrary} />
+          <Route path="/editor" component={DocEditor} />
+          {/* </Switch> */}
+          {/* {this.state.login ? return ( */}
+              <div className="main">
+                <Link className="link" to="/login">
+                  Log in
+                </Link>
+                <Link className="link" to="/register">
+                  Register
+                </Link>
+              </div>
+            {/* ) : return (<div></div>) } */}
         </div>
       </BrowserRouter>
     )
