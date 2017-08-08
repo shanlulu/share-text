@@ -42,122 +42,24 @@ class MainApp extends React.Component {
     // })
   }
 
-  _onFontSizeClick() {
-    var size = document.getElementById('textSizePicker').value;
-    var command;
-    if (size === "10") {
-      command = 'SIZE_10'
-    } else if (size === "12") {
-      command = 'SIZE_12'
-    } else if (size === "16") {
-      command = 'SIZE_16'
-    } else if (size === "20") {
-      command = 'SIZE_20'
-    } else if (size === "24") {
-      command = 'SIZE_24'
-    } else if (size === "48") {
-      command = 'SIZE_48'
-    }
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      command
-    ));
-  }
-
-  _onColorClick() {
-    var color = document.getElementById('textColorPicker').value;
-    var command;
-    if (color === "black") {
-      command = 'BLACK'
-    } else if (color === "red") {
-      command = 'RED'
-    } else if (color === "orange") {
-      command = 'ORANGE'
-    } else if (color === "yellow") {
-      command = 'YELLOW'
-    } else if (color === "green") {
-      command = 'GREEN'
-    } else if (color === "blue") {
-      command = 'BLUE'
-    } else if (color === "purple") {
-      command = 'PURPLE'
-    }
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      command
-    ));
-  }
-
-  _onStrikeClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'STRIKETHROUGH'
-    ));
-  }
-
-  _onBoldClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "BOLD"
-    ));
-  }
-
-  _onUnderlineClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "UNDERLINE"
-    ));
-  }
-
-  _onItalicClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      "ITALIC"
-    ));
-  }
-
-  _onLeftAlignClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      "ALIGN_LEFT"
-    ));
-  }
-
-  _onCenterAlignClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      "ALIGN_CENTER"
-    ));
-  }
-
-  _onRightAlignClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      "ALIGN_RIGHT"
-    ));
-  }
-
-  _onULClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      'unordered-list-item'
-    ));
-  }
-
-  _onOLClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      'ordered-list-item'
-    ));
-  }
-
   render() {
     return (
       <div>
         <Register />
         <Login />
         <DocLibrary />
-        {/* <DocEditor /> */}
+        <DocEditor
+          // _onFontSizeClick={this.onFontSizeClick.bind(this)}
+          // _onColorClick={this.onColorClick.bind(this)}
+          // _onBoldClick={this.onBoldClick.bind(this)}
+          // _onItalicClick={this.onItalicClick.bind(this)}
+          // _onUnderlineClick={this.onUnderlineClick.bind(this)}
+          // _onLeftAlignClick={this.onLeftAlignClick.bind(this)}
+          // _onCenterAlignClick={this.onCenterAlignClick.bind(this)}
+          // _onRightAlignClick={this.onRightAlignClick.bind(this)}
+          // _onULClick={this.onULClick.bind(this)}
+          // _onOLClick={this.onOLClick.bind(this)}
+        />
       </div>
     )
   }
