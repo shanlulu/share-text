@@ -4,6 +4,7 @@ import Register from './Register.js';
 import Login from './Login.js';
 import DocLibrary from './DocLibrary.js';
 import DocEditor from './Editor.js';
+import LogBar from './LogBar.js';
 import { HashRouter, Link, Route } from 'react-router-dom';
 import { Switch } from 'react-router'
 
@@ -17,18 +18,9 @@ class MainApp extends React.Component {
     }
   }
 
-  componentWillUpdate() {
-    axios({
-      method: 'get',
-      url: 'http://localhost:3000/checkuser'
-    })
-    .then(response => {
-      console.log(response)
-      if (response.data) {
-        var login = true;
-        this.setState({login: login})
-      }
-    })
+  loginClick() {
+    console.log('TOGGLE LOGIN')
+    this.setState({login: !this.state.login})
   }
 
   render() {
@@ -43,16 +35,7 @@ class MainApp extends React.Component {
             <Route path="/library" component={DocLibrary}/>
             <Route path="/editor/:docId" component={DocEditor}/>
           </Switch>
-          <div className="main">
-            {/* <Link className="link" to="/login">Log in</Link>
-            <Link className="link" to="/register">Register</Link>
-            <Link className="link" to="/logout">Logout</Link> */}
-            {
-              (!this.state.login)
-              ? <div><Link className="link" to="/login">Log in</Link><Link className="link" to="/register">Register</Link></div>
-              : <div><Link className="link" to="/logout">Logout</Link></div>
-            }
-          </div>
+          <LogBar loginClick={() => this.loginClick()} login={this.state.login}/>
         </div>
       </HashRouter>
     )

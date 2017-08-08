@@ -110,7 +110,6 @@ class DocEditor extends React.Component {
       }
     })
     .then(response => {
-      console.log('resp', response.data)
       this.setState({doc: response.data})
       this.setEditorContent(response.data.content)
     })
