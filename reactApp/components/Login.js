@@ -30,7 +30,6 @@ class Login extends React.Component {
     .then(response => {
       if (response.data === "SUCCESS") {
         // this.props.login = true;
-        console.log('success')
         this.setState({redirect: true, valid: true})
       } else {
         this.setState({valid: false})

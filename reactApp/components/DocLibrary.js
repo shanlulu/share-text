@@ -25,7 +25,26 @@ class DocLibrary extends React.Component {
   }
 
   componentDidMount() {
-
+    axios({
+      method: 'get',
+      url: 'http://localhost:3000/getdocs'
+    })
+    .then(response => {
+      console.log(response.data)
+      var owned = [];
+      var collab = [];
+      response.data.docs.forEach(doc => {
+        if (doc.owner === response.data.id) {
+          owned = owned.concat(doc)
+        } else if (doc.collaborators.includes(response.data.id)) {
+          collab = collab.concat(doc)
+        }
+      })
+      this.setState({owned: owned, collab: collab})
+    })
+    .catch(err => {
+      console.log("Error fetching docs", err)
+    })
   }
 
   openModal() {
@@ -81,13 +100,13 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you own</p>
           {this.state.owned.map(doc => {
-            return (<li key={doc} className="doc">{doc}</li>)
+            return (<li key={doc._id} className="doc">{doc.title}</li>)
           })}
         </ul>
         <ul className="docList">
           <p className="libraryHeader">Docs you collaborate on</p>
           {this.state.collab.map(doc => {
-            return (<li key={doc} className="doc">{doc}</li>)
+            return (<li key={doc._id} className="doc">{doc.title}</li>)
           })}
         </ul>
         <form className="form-group" onSubmit={(e) => this.props.handleSubmit(e)}>
