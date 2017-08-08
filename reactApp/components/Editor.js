@@ -4,6 +4,7 @@ import DocLibrary from './DocLibrary.js'
 import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
+import axios from 'axios'
 
 const { hasCommandModifier } = KeyBindingUtil;
 
@@ -83,10 +84,27 @@ const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 class DocEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      doc: {}
+    };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
+  }
+
+  componentWillMount() {
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/getdoc',
+      data: {
+        id: this.props.match.params.docId
+      }
+    })
+    .then(response => {
+      console.log('resp', response.data)
+      this.setState({doc: response.data})
+    })
   }
 
   _onFontSizeClick() {
@@ -243,8 +261,9 @@ class DocEditor extends React.Component {
     return (
       <div>
         <div style={{ margin: "20px" }} className="body">
-          <p className="docHeader">Edit your doc:</p>
-          <p className="docID">Document ID: testID</p>
+          <p className="docHeader">Edit your doc: {this.state.doc.title}</p>
+
+          <p className="docID">Document ID: {this.state.doc._id}</p>
           <button type="button" className="shareButton">Share Document</button><br></br>
           <button type="button" className="saveButton">Save Changes</button>
           <div className="toolbar">

@@ -141,7 +141,10 @@ app.post('/newdoc', function(req, res) {
               res.status(404).send('ERROR');
             } else {
               console.log('SAVED USER', newUser);
-              res.status(200).send('POST NEW DOC SUCCESS');
+              res.status(200).send({
+                newDoc: doc,
+                newUser: newUser
+              });
             }
           })
         }
@@ -194,6 +197,20 @@ app.get('/getdocs', function(req, res) {
       res.send({docs, id})
     }
   })
+})
+
+app.post('/getdoc', function(req, res) {
+  Doc.findById(req.body.id, function(err, doc) {
+    if (err) {
+      console.log("Error fetching doc", err)
+    } else {
+      res.send(doc)
+    }
+  })
+})
+
+app.get('/checkuser', function(req, res) {
+  res.send(req.user);
 })
 
 

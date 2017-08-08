@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import DocEditor from './Editor.js';
 import Modal from 'react-modal';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom'
+import { Link, Route, Redirect } from 'react-router-dom';
+
 
 class DocLibrary extends React.Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class DocLibrary extends React.Component {
       title: '',
       password: '',
       redirect: false,
+      docId: '',
       sharedDocID: '',
       sharedDocPassword: ''
     }
@@ -36,7 +38,6 @@ class DocLibrary extends React.Component {
       url: 'http://localhost:3000/getdocs'
     })
     .then(response => {
-      console.log(response.data)
       var owned = [];
       var collab = [];
       response.data.docs.forEach(doc => {
@@ -104,7 +105,8 @@ class DocLibrary extends React.Component {
       }
     })
     .then(response => {
-      this.setState({modalIsOpen: false, redirect: true})
+      this.setState({modalIsOpen: false, redirect: true, docId: response.data.newDoc._id})
+      console.log('IN STATE', response.data.newDoc._id);
     })
   }
 
@@ -126,7 +128,8 @@ class DocLibrary extends React.Component {
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to="editor"/>
+      var url = "/editor/" + this.state.docId;
+      return <Redirect to={url}/>
     }
     return (
       <div style={{ margin: "20px" }} className="body">
@@ -142,13 +145,31 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you own</p>
           {this.state.owned.map(doc => {
-            return (<li key={doc._id} className="doc">{doc.title}</li>)
+            return (
+              <div key={doc._id}>
+                <Link to={"/editor/"+doc._id}>
+                  <li className="doc">
+                    {doc.title}
+                  </li>
+                </Link>
+                <Route path={"/editor/"+doc._id} component={DocEditor} />
+              </div>
+            )
           })}
         </ul>
         <ul className="docList">
           <p className="libraryHeader">Docs you collaborate on</p>
           {this.state.collab.map(doc => {
-            return (<li key={doc._id} className="doc">{doc.title}</li>)
+            return (
+              <div key={doc._id}>
+                <Link to={"/editor/"+doc._id}>
+                  <li className="doc">
+                    {doc.title}
+                  </li>
+                </Link>
+                <Route path={"/editor/"+doc._id} component={DocEditor} />
+              </div>
+            )
           })}
         </ul>
         <form className="form-group" onSubmit={(e) => this.props.handleSubmit(e)}>
@@ -173,7 +194,7 @@ class DocLibrary extends React.Component {
               <h2 className="modalText ">Give it a name:</h2><input type="text" onChange={(e) => this.inputChangeTitle(e)} className="form-control registerInput" placeholder="Document Title"></input><br></br>
               <h2 className="modalText">Password:</h2><input type="password" onChange={(e) => this.inputChangePassword(e)} className="form-control registerInput" placeholder="Password"></input><br></br>
               <input className="saveButton" type="submit" value="Create Document" />
-              <button className="saveButton" onClick={this.closeModal}>cancel</button>
+              <button className="saveButton" onClick={this.closeModal}>Cancel</button>
             </form>
           </Modal>
           <Modal
@@ -190,7 +211,7 @@ class DocLibrary extends React.Component {
                 <h2 className="modalText ">Document ID:</h2><input type="text" onChange={(e) => this.inputChangeSharedDocID(e)} className="form-control registerInput" placeholder="Document ID"></input><br></br>
                 <h2 className="modalText">Password:</h2><input type="password" onChange={(e) => this.inputChangeSharedDocPassword(e)} className="form-control registerInput" placeholder="Password"></input><br></br>
                 <input className="saveButton" type="submit" value="Add Document" />
-                <button className="saveButton" onClick={this.closeModalTwo}>cancel</button>
+                <button className="saveButton" onClick={this.closeModalTwo}>Cancel</button>
               </form>
             </Modal>
         </div>
