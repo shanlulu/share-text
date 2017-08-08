@@ -1,20 +1,19 @@
 .body {
-  /*background-color: #94B0DA;*/
   border: 3px solid #8F91A2;
   border-radius: 10px;
   padding: 10px;
+  margin: 20px
 }
-
 .editor{
   border: 1px solid #505A5B;
   border-radius: 5px;
   padding: 5px;
   background-color: #DCEDFF;
   min-height: 300px;
-  font-family: 'Saira', sans-serif;
 }
 .toolbar{
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   margin-top: 5px;
   margin-bottom: 5px
@@ -22,10 +21,6 @@
 .docHeader{
   font-size: 30px;
   text-align: center;
-  font-family: 'Saira', sans-serif;
-}
-.docID {
-  font-family: 'Saira', sans-serif;
 }
 .saveButton{
   margin-top: 5px;
@@ -36,7 +31,7 @@
   color: #505A5B;
   height: 40px;
   text-align: center;
-  font-family: 'Saira', sans-serif;
+  margin-right: 10px
 }
 .styleButton{
   text-align: center;
@@ -47,19 +42,24 @@
   padding: 4px;
   min-width: 30px;
   color: #505A5B;
-  font-family: 'Saira', sans-serif;
 }
+
 .drop {
   margin-left: 3px;
-  font-family: 'Saira', sans-serif;
-  font-size: 10px;
 }
+
 .center {
   text-align: center;
 }
+
 .left {
   text-align: left;
 }
+
 .right {
   text-align: right;
+}
+
+.registerInput{
+  width: 300px
 }

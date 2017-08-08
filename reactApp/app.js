@@ -3,12 +3,60 @@ var ReactDOM = require('react-dom');
 import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap} from 'draft-js';
 import Immutable from 'immutable'
 
-
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
 // .then(resp => resp.text())
 // .then(text => console.log(text))
 // .catch(err => {throw err})
+
+class Register extends React.Component {
+    constructor(props) {
+      super(props)
+      }
+
+    render() {
+      return (
+        <div className="body">
+          <p className="docHeader">Register!</p>
+          <div className="form-group">
+            <label>Username</label>
+            <input type="text" className="form-control registerInput" placeholder="Enter Username"></input>
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" className="form-control registerInput" placeholder="Password"></input>
+          </div>
+          <button className="saveButton" type="button">Register</button>
+          <button className="saveButton" type="button">Skip to Login</button>
+        </div>
+      )
+    }
+  }
+
+  class Login extends React.Component {
+      constructor(props) {
+        super(props)
+        }
+
+      render() {
+        return (
+          <div className="body">
+            <p className="docHeader">Login!</p>
+            <div className="form-group">
+              <label>Username</label>
+              <input type="text" className="form-control registerInput" placeholder="Enter Username"></input>
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input type="password" className="form-control registerInput" placeholder="Password"></input>
+            </div>
+            <button className="saveButton" type="button">Login</button>
+            <button className="saveButton" type="button">Not registered?</button>
+          </div>
+        )
+      }
+    }
+
 
 const styleMap = {
   'SIZE_10': {
@@ -244,7 +292,13 @@ class MyEditor extends React.Component {
   }
 }
 
+// export default {
+//   Register: Register,
+//   Login: Login,
+//   MyEditor: MyEditor
+// }
+
 ReactDOM.render(
-  <MyEditor />,
+  <Register />,
   document.getElementById('root')
 );
