@@ -66,39 +66,53 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.post('/register', function(req, res) {
-  var u = new User({
-    username: req.body.username,
-    password: hashPassword(req.body.password),
-    ownedDocs: [],
-    collabDocs: []
-  });
-  u.save(function(err, user) {
+  console.log('IN REGISTER');
+  User.findOne({ username: req.body.username}, function(err, user) {
     if (err) {
       console.log('ERROR', err);
-      // res.status(500).redirect('/register');
+      res.status(500).send('ERROR');
     } else {
-      console.log('SAVED', user);
-      res.send('POST REGISTER SUCCESS');
+      if (user) {
+        console.log('SAME NAME');
+        res.status(500).send('Try another name!');
+      } else {
+        var u = new User({
+          username: req.body.username,
+          password: hashPassword(req.body.password),
+          ownedDocs: [],
+          collabDocs: []
+        });
+        u.save(function(err, user) {
+          if (err) {
+            console.log('ERROR', err);
+            res.status(500).send('ERROR!');
+          } else {
+            console.log('SAVED', user);
+            res.status(200).send('REGISTERED!');
+          }
+        });
+      }
     }
-  });
+  })
 });
 
 
 app.post('/login', function(req, res, next) {
+  console.log('IN LOGIN');
     passport.authenticate('local', function(err, user, info) {
-      if (err) { return next(err); }
-      if (!user) { return res.send('NO USER'); }
+      if (err) { return res.status(500).send('ERROR'); }
+      if (!user) { return res.status(500).send('NO USER'); }
       req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        return res.send('SUCCESS');
+        if (err) { return res.status(500).send('ERROR'); }
+        return res.status(200).send('SUCCESS');
       });
     })(req, res, next);
   });
 
-// router.get('/logout', function(req, res) {
-//     req.logout();
-//     res.redirect('/login');
-//   });
+app.get('/logout', function(req, res) {
+    req.logout();
+    res.status(200).send('LOGOUT SUCCESS');
+  });
 
 app.post('/newdoc', function(req, res) {
   var newDoc = new Doc({
@@ -111,19 +125,23 @@ app.post('/newdoc', function(req, res) {
   newDoc.save(function(err, doc) {
     if (err) {
       console.log('ERROR', err);
+      res.status(500).send('ERROR');
     } else {
       console.log('SAVED DOC', doc);
       User.findById(req.user._id, function(err, user) {
         if (err) {
           console.log('ERROR', err);
+          res.status(500).send('ERROR');
         } else {
           user.ownedDocs.push(doc._id);
           user.collabDocs.push(doc._id);
           user.save(function(err, newUser) {
-            if (err) console.log('ERROR', err);
-            else {
+            if (err) {
+              console.log('ERROR', err);
+              res.status(500).send('ERROR');
+            } else {
               console.log('SAVED USER', newUser);
-              res.send('POST NEW DOC SUCCESS');
+              res.status(200).send('POST NEW DOC SUCCESS');
             }
           })
         }
@@ -132,12 +150,37 @@ app.post('/newdoc', function(req, res) {
   });
 })
 
-app.post('/auth', function(req, res) {
+app.post('/docauth1', function(req, res) {
   Doc.findById(req.body.docId, function(err, doc) {
     if (doc.collaborators.includes(req.user._id)) {
       res.status(200).send("FREE TO VISIT THE DOC!");
     } else {
-      res.status(500).send("NEED PASSPORT");
+      res.status(500).send("NEED PASSWORD");
+    }
+  })
+})
+
+app.post('/docauth2', function(req, res) {
+  Doc.findById(req.body.docId, function(err, doc) {
+    if (doc.password === hashPassword(req.body.password)) {
+      doc.collaborators.push(req.user._id);
+      doc.save(function(err, newdoc) {
+        if (err) {
+          console.log('ERROR', err);
+          res.status(500).send('ERROR');
+        } else {
+          console.log('SAVED DOC', newdoc);
+          User.findById(req.user._id, function(err, user) {
+            user.collabDocs.push(req.body.docId);
+            user.save(function(err, newuser) {
+              console.log('SAVED USER', newuser);
+              res.status(200).send("FREE TO VISIT THE DOC!");
+            })
+          })
+        }
+      })
+    } else {
+      res.status(500).send("WRONG PASSWORD");
     }
   })
 })
