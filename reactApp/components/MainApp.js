@@ -13,6 +13,9 @@ import axios from 'axios';
 class MainApp extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      login: false
+    }
   }
 
   componentDidMount() {
@@ -27,18 +30,13 @@ class MainApp extends React.Component {
       <BrowserRouter>
         <div>
           <h5 className="main">Welcome!</h5>
-          <Switch>
-            <Route path="/register" component={Register}/>
-            <Route path="/login" component={Login} />
-          </Switch>
-          <div className="main">
-            <Link className="link" to="/login">
-              Log in
-            </Link>
-            <Link className="link" to="/register">
-              Register
-            </Link>
-          </div>
+          {/* <Switch> */}
+          <Route path="/register" component={Register}/>
+          <Route path="/login" component={Login} login={this.state.login}/>
+          <Route path="/library" component={DocLibrary} />
+          <Route path="/editor" component={DocEditor} />
+          {/* </Switch> */}
+
         </div>
       </BrowserRouter>
     )

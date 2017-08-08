@@ -2,37 +2,79 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Register from './Register.js';
 import DocLibrary from './DocLibrary.js'
-import { Link, Route, IndexRoute } from 'react-router-dom';
-import { Switch } from 'react-router'
+import { Link, Route, Redirect } from 'react-router-dom';
+import { Switch } from 'react-router';
+import axios from 'axios';
 
 class Login extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      name: '',
+      password: '',
+      redirect: false
+    }
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit(e) {
+    e.preventDefault();
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/login',
+      data: {
+        username: this.state.name,
+        password: this.state.password
+      }
+    })
+    .then(response => {
+      console.log('resp', response)
+      if (response.data === "SUCCESS") {
+        this.setState({redirect: true})
+        this.props.login = true;
+      }
+    })
+  }
+
+  handleChangeName(e) {
+    this.setState({name: e.target.value})
+  }
+
+  handleChangePass(e) {
+    this.setState({password: e.target.value})
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/library" />
+    }
     return (
       <div>
         <div className="body">
           <p className="docHeader">Login!</p>
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={(e) => this.handleSubmit(e)}>
             <div className="form-group">
               <label>Username</label>
-              <input type="text" name="name" className="form-control registerInput" placeholder="Enter Username"></input>
+              <input
+                onChange={(e) => this.handleChangeName(e)}
+                type="text"
+                name="name"
+                className="form-control registerInput"
+                placeholder="Enter Username"
+                value={this.state.name}></input>
             </div>
             <div className="form-group">
               <label>Password</label>
-              <input type="password" name="name" className="form-control registerInput" placeholder="Password"></input>
+              <input
+                onChange={(e) => this.handleChangePass(e)}
+                type="password"
+                name="password"
+                className="form-control registerInput"
+                placeholder="Password"
+                value={this.state.password}></input>
             </div>
-            <Link to="/library">
-              <button className="saveButton" type="button">
-                Login
-              </button>
-            </Link>
+            <button className="saveButton" type="submit">
+              Login
+            </button>
           </form>
           <Link to="/register">
             <button className="saveButton" type="button">
