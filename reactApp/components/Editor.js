@@ -1,7 +1,15 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
-import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  DefaultDraftBlockRenderMap,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
+  ContentState
+} from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
 import axios from 'axios'
@@ -11,15 +19,15 @@ const { hasCommandModifier } = KeyBindingUtil;
 function keyBindingFn(e: SyntheticKeyboardEvent): string {
   if (e.keyCode === 66 && hasCommandModifier(e)) {
     return 'bold';
-} else if (e.keyCode === 73 && hasCommandModifier(e)) {
+  } else if (e.keyCode === 73 && hasCommandModifier(e)) {
     return 'italicize';
-} else if (e.keyCode === 85 && hasCommandModifier(e)) {
+  } else if (e.keyCode === 85 && hasCommandModifier(e)) {
     return 'underline';
-} else if (e.keyCode === 37 && hasCommandModifier(e)) {
+  } else if (e.keyCode === 37 && hasCommandModifier(e)) {
     return 'leftAlign';
-} else if (e.keyCode === 38 && hasCommandModifier(e)) {
+  } else if (e.keyCode === 38 && hasCommandModifier(e)) {
     return 'centerAlign';
-} else if (e.keyCode === 39 && hasCommandModifier(e)) {
+  } else if (e.keyCode === 39 && hasCommandModifier(e)) {
     return 'rightAlign';
   }
   return getDefaultKeyBinding(e);
@@ -104,6 +112,7 @@ class DocEditor extends React.Component {
     .then(response => {
       console.log('resp', response.data)
       this.setState({doc: response.data})
+      this.setEditorContent(response.data.content)
     })
   }
 
@@ -217,25 +226,25 @@ class DocEditor extends React.Component {
   }
 
   handleKeyCommand(command: string): DraftHandleValue {
-        if (command === 'bold') {
-          this.onChange(RichUtils.toggleInlineStyle(
-            this.state.editorState,
-            "BOLD"
-          ));
-          return 'handled';
-      } else if (command === 'italicize') {
-        this.onChange(RichUtils.toggleInlineStyle(
-          this.state.editorState,
-          "ITALIC"
-        ));
+    if (command === 'bold') {
+      this.onChange(RichUtils.toggleInlineStyle(
+        this.state.editorState,
+        "BOLD"
+      ));
+      return 'handled';
+    } else if (command === 'italicize') {
+      this.onChange(RichUtils.toggleInlineStyle(
+        this.state.editorState,
+        "ITALIC"
+      ));
       return 'handled';
     } else if (command === 'underline') {
       this.onChange(RichUtils.toggleInlineStyle(
         this.state.editorState,
         "UNDERLINE"
       ));
-    return 'handled';
-  } else if (command === 'leftAlign') {
+      return 'handled';
+    } else if (command === 'leftAlign') {
       this.onChange(RichUtils.toggleBlockType(
         this.state.editorState,
         "ALIGN_LEFT"
@@ -246,16 +255,22 @@ class DocEditor extends React.Component {
         this.state.editorState,
         "ALIGN_CENTER"
       ));
-    return 'handled';
-  } else if (command === 'rightAlign') {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      "ALIGN_RIGHT"
-    ));
-    return 'handled';
+      return 'handled';
+    } else if (command === 'rightAlign') {
+      this.onChange(RichUtils.toggleBlockType(
+        this.state.editorState,
+        "ALIGN_RIGHT"
+      ));
+      return 'handled';
     }
-      return 'not-handled';
-    }
+    return 'not-handled';
+  }
+
+  setEditorContent(text) {
+    const contentState = ContentState.createFromText(text);
+    const editorState = EditorState.push(this.state.editorState, contentState);
+    this.setState({ editorState });
+  }
 
   render() {
     return (

@@ -17,7 +17,7 @@ class MainApp extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillUpdate() {
     axios({
       method: 'get',
       url: 'http://localhost:3000/checkuser'
@@ -44,14 +44,14 @@ class MainApp extends React.Component {
             <Route path="/editor/:docId" component={DocEditor}/>
           </Switch>
           <div className="main">
-            <Link className="link" to="/login">Log in</Link>
+            {/* <Link className="link" to="/login">Log in</Link>
             <Link className="link" to="/register">Register</Link>
-            <Link className="link" to="/logout">Logout</Link>
-            {/* {
+            <Link className="link" to="/logout">Logout</Link> */}
+            {
               (!this.state.login)
               ? <div><Link className="link" to="/login">Log in</Link><Link className="link" to="/register">Register</Link></div>
               : <div><Link className="link" to="/logout">Logout</Link></div>
-            } */}
+            }
           </div>
         </div>
       </HashRouter>
