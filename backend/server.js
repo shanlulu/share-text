@@ -203,6 +203,20 @@ app.get('/getdocs', function(req, res) {
   })
 })
 
+app.post('/getdoc', function(req, res) {
+  Doc.findById(req.body.id, function(err, doc) {
+    if (err) {
+      console.log("Error fetching doc", err)
+    } else {
+      res.send(doc)
+    }
+  })
+})
+
+app.get('/checkuser', function(req, res) {
+  res.send(req.user);
+})
+
 
 
 

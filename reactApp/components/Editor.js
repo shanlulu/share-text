@@ -1,9 +1,29 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
-import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
+import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
+import axios from 'axios'
+
+const { hasCommandModifier } = KeyBindingUtil;
+
+function keyBindingFn(e: SyntheticKeyboardEvent): string {
+  if (e.keyCode === 66 && hasCommandModifier(e)) {
+    return 'bold';
+} else if (e.keyCode === 73 && hasCommandModifier(e)) {
+    return 'italicize';
+} else if (e.keyCode === 85 && hasCommandModifier(e)) {
+    return 'underline';
+} else if (e.keyCode === 37 && hasCommandModifier(e)) {
+    return 'leftAlign';
+} else if (e.keyCode === 38 && hasCommandModifier(e)) {
+    return 'centerAlign';
+} else if (e.keyCode === 39 && hasCommandModifier(e)) {
+    return 'rightAlign';
+  }
+  return getDefaultKeyBinding(e);
+}
 
 const styleMap = {
   'SIZE_10': {
@@ -64,9 +84,27 @@ const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 class DocEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      doc: {}
+    };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleBlockType = (type) => this._toggleBlockType(type);
+    this.handleKeyCommand = this.handleKeyCommand.bind(this);
+  }
+
+  componentWillMount() {
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/getdoc',
+      data: {
+        id: this.props.match.params.docId
+      }
+    })
+    .then(response => {
+      console.log('resp', response.data)
+      this.setState({doc: response.data})
+    })
   }
 
   _onFontSizeClick() {
@@ -178,12 +216,54 @@ class DocEditor extends React.Component {
     ));
   }
 
+  handleKeyCommand(command: string): DraftHandleValue {
+        if (command === 'bold') {
+          this.onChange(RichUtils.toggleInlineStyle(
+            this.state.editorState,
+            "BOLD"
+          ));
+          return 'handled';
+      } else if (command === 'italicize') {
+        this.onChange(RichUtils.toggleInlineStyle(
+          this.state.editorState,
+          "ITALIC"
+        ));
+      return 'handled';
+    } else if (command === 'underline') {
+      this.onChange(RichUtils.toggleInlineStyle(
+        this.state.editorState,
+        "UNDERLINE"
+      ));
+    return 'handled';
+  } else if (command === 'leftAlign') {
+      this.onChange(RichUtils.toggleBlockType(
+        this.state.editorState,
+        "ALIGN_LEFT"
+      ));
+      return 'handled';
+    } else if (command === 'centerAlign') {
+      this.onChange(RichUtils.toggleBlockType(
+        this.state.editorState,
+        "ALIGN_CENTER"
+      ));
+    return 'handled';
+  } else if (command === 'rightAlign') {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState,
+      "ALIGN_RIGHT"
+    ));
+    return 'handled';
+    }
+      return 'not-handled';
+    }
+
   render() {
     return (
       <div>
         <div style={{ margin: "20px" }} className="body">
-          <p className="docHeader">Edit your doc:</p>
-          <p className="docID">Document ID: {this.props.match.params.docId}</p>
+          <p className="docHeader">Edit your doc: {this.state.doc.title}</p>
+
+          <p className="docID">Document ID: {this.state.doc._id}</p>
           <button type="button" className="shareButton">Share Document</button><br></br>
           <button type="button" className="saveButton">Save Changes</button>
           <div className="toolbar">
@@ -234,6 +314,8 @@ class DocEditor extends React.Component {
               onChange={this.onChange}
               placeholder="Enter your text below"
               blockRenderMap={extendedBlockRenderMap}
+              keyBindingFn={keyBindingFn}
+              handleKeyCommand={this.handleKeyCommand}
             />
           </div>
           <Link to="/library">
