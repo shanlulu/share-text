@@ -33,19 +33,19 @@ class MainApp extends React.Component {
           {/* <Switch> */}
           <Route path="/register" component={Register}/>
           <Route path="/login" component={Login} login={this.state.login}/>
+          <Route path="/logout" component={Login} login={this.state.login}/>
           <Route path="/library" component={DocLibrary} />
           <Route path="/editor" component={DocEditor} />
-          {/* </Switch> */}
-          {/* {this.state.login ? return ( */}
-              <div className="main">
-                <Link className="link" to="/login">
-                  Log in
-                </Link>
-                <Link className="link" to="/register">
-                  Register
-                </Link>
-              </div>
-            {/* ) : return (<div></div>) } */}
+          <div className="main">
+            <Link className="link" to="/login">Log in</Link>
+            <Link className="link" to="/register">Register</Link>
+            <Link className="link" to="/logout">Logout</Link>
+            {/* {
+              (!this.state.login)
+              ? <div><Link className="link" to="/login">Log in</Link><Link className="link" to="/register">Register</Link></div>
+              : <div><Link className="link" to="/logout">Logout</Link></div>
+            } */}
+          </div>
         </div>
       </BrowserRouter>
     )

@@ -27,10 +27,9 @@ class Login extends React.Component {
       }
     })
     .then(response => {
-      console.log('resp', response)
       if (response.data === "SUCCESS") {
+        // this.props.login = true;
         this.setState({redirect: true})
-        this.props.login = true;
       }
     })
   }
