@@ -73,6 +73,9 @@ const styleMap = {
   },
   'PURPLE': {
     color: 'purple'
+  },
+  'HIGHLIGHT': {
+    backgroundColor: '#fff493'
   }
 }
 
@@ -99,15 +102,17 @@ class DocEditor extends React.Component {
       socket: io('http://localhost:3000')
     };
     this.onChange = (editorState) => {
-      const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-      this.state.socket.emit('change', rawContent);
-      this.setState({editorState});
+      this.state.socket.emit('change', editorState);
+      this.setState({editorState: editorState});
+      console.log('editor state: ', this.state.editorState);
+      this.state.socket.emit('newEdit', editorState);
     }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
 
   componentWillMount() {
+
     this.state.socket.on('connect', () => {
       console.log('Connect Editor');
     });
@@ -115,18 +120,29 @@ class DocEditor extends React.Component {
     this.state.socket.on('errorMessage', message => {
       alert('There was an error connecting!', message)
     });
-
     axios({
-      method: 'post',
-      url: 'http://localhost:3000/getdoc',
-      data: {
-        id: this.props.match.params.docId
-      }
+      method: 'get',
+      url: 'http://localhost:3000/checkuser'
     })
-    .then(response => {
-      this.setState({doc: response.data})
-      this.state.socket.emit('room', response.data._id);
-      this.setEditorContent(response.data.content)
+    .then(user => {
+      var name = '@' + user.data.username;
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/getdoc',
+        data: {
+          id: this.props.match.params.docId
+        }
+      })
+      .then(response => {
+        console.log(response.data)
+        this.setState({doc: response.data})
+        this.state.socket.emit('username', name);
+        this.state.socket.emit('room', response.data._id);
+        this.setEditorContent(response.data.content)
+      })
+    })
+    .catch(err => {
+      console.log("Error fetching user", err)
     })
   }
 
@@ -134,12 +150,11 @@ class DocEditor extends React.Component {
     this.state.socket.on('message', data => {
       let newMsg= data.username + ' joined room ' + data.content
       console.log(newMsg)
-    })
-
-    this.state.socket.on('change', data => {
-      console.log('CHANGE DATA', data);
-      this.setEditorContent(data);
-    })
+    });
+    this.state.socket.on('newEdit', content => {
+      console.log('NEW EDIT: ', content);
+      this.setState({ editor})
+    });
   }
 
   _onFontSizeClick() {
@@ -251,6 +266,13 @@ class DocEditor extends React.Component {
     ));
   }
 
+  _onHighlight() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      "HIGHLIGHT"
+    ));
+  }
+
   handleKeyCommand(command: string): DraftHandleValue {
     if (command === 'bold') {
       this.onChange(RichUtils.toggleInlineStyle(
@@ -359,6 +381,8 @@ class DocEditor extends React.Component {
             <span title="Align Right"><button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span className="glyphicon glyphicon-align-right"></span></button></span>
             <span title="Bullet List"><button className="styleButton" type="button" onClick={this._onULClick.bind(this)}><span className="glyphicon glyphicon-list"></span></button></span>
             <span title="Numbered List"><button className="styleButton" type="button" onClick={this._onOLClick.bind(this)}><span className="glyphicon glyphicon-sort-by-order"></span></button></span>
+            <span title="Highlight"><button className="styleButton" type="button" onClick={this._onHighlight.bind(this)}><span className="glyphicon glyphicon-adjust"></span></button></span>
+
           </div>
           <div className="editor">
             <Editor
