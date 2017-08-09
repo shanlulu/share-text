@@ -59,13 +59,6 @@ class DocLibrary extends React.Component {
     })
   }
 
-  click(doc) {
-    console.log('Enter...')
-  //   var msg = "Join " + doc._id
-  //   this.state.socket.emit('join', msg);
-  //   console.log("MSG: " + msg)
-  }
-
   openModal() {
     this.setState({modalIsOpen: true});
   }
@@ -133,8 +126,7 @@ class DocLibrary extends React.Component {
       }
     })
     .then(response => {
-      this.setState({modalIsOpen: false, redirect: true});
-      console.log('ACCESSED SHARED DOC')
+      this.setState({modalIsOpen: false, redirect: true, docId: this.state.sharedDocID});
     })
   }
 

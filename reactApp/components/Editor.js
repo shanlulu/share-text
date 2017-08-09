@@ -94,7 +94,6 @@ class DocEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: '',
       editorState: EditorState.createEmpty(),
       doc: {},
       socket: io('http://localhost:3000')
@@ -118,38 +117,23 @@ class DocEditor extends React.Component {
     });
 
     axios({
-      method: 'get',
-      url: 'http://localhost:3000/checkuser'
+      method: 'post',
+      url: 'http://localhost:3000/getdoc',
+      data: {
+        id: this.props.match.params.docId
+      }
     })
-    .then(user => {
-      var name = '@' + user.data.username;
-      axios({
-        method: 'post',
-        url: 'http://localhost:3000/getdoc',
-        data: {
-          id: this.props.match.params.docId
-        }
-      })
-      .then(response => {
-        console.log(response.data)
-        this.setState({doc: response.data})
-        this.state.socket.emit('username', name);
-        this.state.socket.emit('room', response.data._id);
-        this.setEditorContent(response.data.content)
-      })
-    })
-    .catch(err => {
-      console.log("Error fetching user", err)
+    .then(response => {
+      this.setState({doc: response.data})
+      this.state.socket.emit('room', response.data._id);
+      this.setEditorContent(response.data.content)
     })
   }
 
   componentDidMount() {
     this.state.socket.on('message', data => {
-      // let newArray = this.state.messages
-      console.log('GET JOIN MESSAGE');
       let newMsg= data.username + ' joined room ' + data.content
       console.log(newMsg)
-      // this.setState({messages: this.state.messages.concat(newMsg), message: ''})
     })
 
     this.state.socket.on('change', data => {
