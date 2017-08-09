@@ -175,7 +175,6 @@ class DocEditor extends React.Component {
     //   var selObj = window.getSelection();
     //   window.alert(selObj);
     // }, 9000);
-    });
     this.state.socket.on('newEdit', content => {
       console.log('NEW EDIT: ', content);
       this.setState({ editor})
