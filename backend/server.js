@@ -240,6 +240,13 @@ app.post('/savedoc', function(req, res) {
 io.on('connection', socket => {
   console.log('Connection')
 
+  socket.on('username', username => {
+    if (!username || !username.trim()) {
+      return socket.emit('errorMessage', 'No username!');
+    }
+    socket.username = String(username);
+  });
+
   socket.on('room', requestedRoom => {
     console.log("ROOM : " + requestedRoom)
     if (!requestedRoom) {
@@ -252,6 +259,7 @@ io.on('connection', socket => {
     socket.join(requestedRoom, () => {
       console.log("Joined room " + requestedRoom)
       io.to(requestedRoom).emit('message', {
+        username: socket.username,
         content: requestedRoom
       });
     });
@@ -260,7 +268,8 @@ io.on('connection', socket => {
   socket.on('change', text => {
     console.log('Text: ', text)
     io.to(socket.room).emit('message', {
-      content: 'Changes made!'
+      username: socket.username,
+      content: 'CHANGE'
     });
   })
 
