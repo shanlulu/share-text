@@ -271,6 +271,11 @@ io.on('connection', socket => {
     socket.to(socket.room).broadcast.emit('change', rawContent);
   })
 
+  socket.on('highlight', content => {
+    console.log('SERVER HIGHLIGHT', content);
+    io.to(socket.room).emit('highlight', content);
+  })
+
   // socket.on()
 
 })

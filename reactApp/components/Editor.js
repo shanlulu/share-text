@@ -99,6 +99,11 @@ class DocEditor extends React.Component {
       socket: io('http://localhost:3000')
     };
     this.onChange = (editorState) => {
+      console.log('SELECTION', this.state.editorState.getSelection());
+      // if (this.previousHighlight)
+      // highlightStyle
+      // acceptSelection
+      //
       const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
       this.state.socket.emit('change', rawContent);
       this.setState({editorState});
@@ -131,6 +136,10 @@ class DocEditor extends React.Component {
   }
 
   componentDidMount() {
+
+    var highlight = window.getSelection();
+    this.state.socket.emit('highlight', highlight);
+
     this.state.socket.on('message', data => {
       let newMsg= data.username + ' joined room ' + data.content
       console.log(newMsg)
@@ -138,8 +147,18 @@ class DocEditor extends React.Component {
 
     this.state.socket.on('change', data => {
       console.log('CHANGE DATA', data);
-      this.setEditorContent(data);
+      this.setEditorContent(data.rawContent);
     })
+
+    this.state.socket.on('highlight', data => {
+      console.log('EDITOR HIGHLIGHT', data);
+    })
+
+
+    // setInterval(() => {
+    //   var selObj = window.getSelection();
+    //   window.alert(selObj);
+    // }, 9000);
   }
 
   _onFontSizeClick() {
