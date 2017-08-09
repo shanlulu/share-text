@@ -196,6 +196,7 @@ app.get('/getdocs', function(req, res) {
     if (err) {
       console.log("Error fetching docs", err)
     } else {
+      console.log('USER', req.user);
       var id = req.user._id;
       res.send({docs, id});
     }
@@ -213,6 +214,7 @@ app.post('/getdoc', function(req, res) {
 })
 
 app.get('/checkuser', function(req, res) {
+  console.log('CHECKUSER', req.user);
   res.send(req.user);
 })
 
@@ -230,7 +232,7 @@ app.post('/savedoc', function(req, res) {
           res.status(404).send('CANNOT SAVE DOC');
         } else {
           console.log('SAVED', newDoc);
-          res.status(200).send('SAVED DOC!');
+          res.status(200).send(newDoc);
         }
       })
     }
@@ -265,13 +267,11 @@ io.on('connection', socket => {
     });
   });
 
-  socket.on('change', text => {
-    console.log('Text: ', text)
-    io.to(socket.room).emit('message', {
-      username: socket.username,
-      content: 'CHANGE'
-    });
+  socket.on('change', rawContent => {
+    socket.to(socket.room).broadcast.emit('change', rawContent);
   })
+
+  // socket.on()
 
 })
 

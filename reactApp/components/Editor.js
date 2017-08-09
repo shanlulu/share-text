@@ -100,7 +100,8 @@ class DocEditor extends React.Component {
       socket: io('http://localhost:3000')
     };
     this.onChange = (editorState) => {
-      this.state.socket.emit('change', editorState)
+      const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+      this.state.socket.emit('change', rawContent);
       this.setState({editorState});
     }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
@@ -145,9 +146,15 @@ class DocEditor extends React.Component {
   componentDidMount() {
     this.state.socket.on('message', data => {
       // let newArray = this.state.messages
+      console.log('GET JOIN MESSAGE');
       let newMsg= data.username + ' joined room ' + data.content
       console.log(newMsg)
       // this.setState({messages: this.state.messages.concat(newMsg), message: ''})
+    })
+
+    this.state.socket.on('change', data => {
+      console.log('CHANGE DATA', data);
+      this.setEditorContent(data);
     })
   }
 
