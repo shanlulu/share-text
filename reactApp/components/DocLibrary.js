@@ -126,8 +126,7 @@ class DocLibrary extends React.Component {
       }
     })
     .then(response => {
-      this.setState({modalIsOpen: false, redirect: true});
-      console.log('ACCESSED SHARED DOC')
+      this.setState({modalIsOpen: false, redirect: true, docId: this.state.sharedDocID});
     })
   }
 

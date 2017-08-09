@@ -94,14 +94,14 @@ class DocEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: '',
       editorState: EditorState.createEmpty(),
       doc: {},
       socket: io('http://localhost:3000')
     };
     this.onChange = (editorState) => {
-      this.state.socket.emit('change', editorState)
-      this.setState({editorState});
+      this.state.socket.emit('change', editorState);
+      this.setState({editorState: editorState});
+      console.log('editor state: ', this.state.editorState)
     }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
@@ -117,28 +117,16 @@ class DocEditor extends React.Component {
     });
 
     axios({
-      method: 'get',
-      url: 'http://localhost:3000/checkuser'
+      method: 'post',
+      url: 'http://localhost:3000/getdoc',
+      data: {
+        id: this.props.match.params.docId
+      }
     })
-    .then(user => {
-      var name = '@' + user.data.username;
-      axios({
-        method: 'post',
-        url: 'http://localhost:3000/getdoc',
-        data: {
-          id: this.props.match.params.docId
-        }
-      })
-      .then(response => {
-        console.log(response.data)
-        this.setState({doc: response.data})
-        this.state.socket.emit('username', name);
-        this.state.socket.emit('room', response.data._id);
-        this.setEditorContent(response.data.content)
-      })
-    })
-    .catch(err => {
-      console.log("Error fetching user", err)
+    .then(response => {
+      this.setState({doc: response.data})
+      this.state.socket.emit('room', response.data._id);
+      this.setEditorContent(response.data.content)
     })
   }
 
