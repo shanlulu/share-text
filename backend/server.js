@@ -230,7 +230,7 @@ app.post('/savedoc', function(req, res) {
           res.status(404).send('CANNOT SAVE DOC');
         } else {
           console.log('SAVED', newDoc);
-          res.status(200).send('SAVED DOC!');
+          res.status(200).send(newDoc);
         }
       })
     }

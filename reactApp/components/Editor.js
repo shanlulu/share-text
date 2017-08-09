@@ -144,10 +144,8 @@ class DocEditor extends React.Component {
 
   componentDidMount() {
     this.state.socket.on('message', data => {
-      // let newArray = this.state.messages
       let newMsg= data.username + ' joined room ' + data.content
       console.log(newMsg)
-      // this.setState({messages: this.state.messages.concat(newMsg), message: ''})
     })
   }
 
