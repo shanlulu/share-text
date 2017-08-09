@@ -33,9 +33,9 @@ class DocLibrary extends React.Component {
   }
 
   componentDidMount() {
-    this.state.socket.on('connect', () => {
-      console.log('Connect Library');
-    });
+    // this.state.socket.on('connect', () => {
+    //   console.log('Connect Library');
+    // });
 
     axios({
       method: 'get',

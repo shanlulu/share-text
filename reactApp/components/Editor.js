@@ -98,7 +98,10 @@ class DocEditor extends React.Component {
       doc: {},
       socket: io('http://localhost:3000')
     };
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      this.state.socket.emit('change', editorState)
+      this.setState({editorState});
+    }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
@@ -106,8 +109,6 @@ class DocEditor extends React.Component {
   componentWillMount() {
     this.state.socket.on('connect', () => {
       console.log('Connect Editor');
-      this.state.socket.emit('room', response.data._id);
-      console.log("ROOM: " + response.data._id)
     });
 
     this.state.socket.on('errorMessage', message => {
@@ -123,7 +124,17 @@ class DocEditor extends React.Component {
     })
     .then(response => {
       this.setState({doc: response.data})
+      this.state.socket.emit('room', response.data._id);
       this.setEditorContent(response.data.content)
+    })
+  }
+
+  componentDidMount() {
+    this.state.socket.on('message', data => {
+      // let newArray = this.state.messages
+      let newMsg= 'Joined room: ' + data.content
+      console.log(newMsg)
+      // this.setState({messages: this.state.messages.concat(newMsg), message: ''})
     })
   }
 

@@ -251,12 +251,18 @@ io.on('connection', socket => {
     socket.room = requestedRoom;
     socket.join(requestedRoom, () => {
       console.log("Joined room " + requestedRoom)
-      // io.to(requestedRoom).emit('message', {
-      //   username: 'System',
-      //   content: `${socket.username} has joined`
-      // });
+      io.to(requestedRoom).emit('message', {
+        content: requestedRoom
+      });
     });
   });
+
+  socket.on('change', text => {
+    console.log('Text: ', text)
+    io.to(socket.room).emit('message', {
+      content: 'Changes made!'
+    });
+  })
 
 })
 
