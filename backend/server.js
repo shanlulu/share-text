@@ -16,6 +16,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 
 var mongoose = require('mongoose');
 mongoose.connection.on('connected', function() {
@@ -234,7 +237,12 @@ app.post('/savedoc', function(req, res) {
   })
 })
 
+io.on('connection', socket => {
+  console.log('connection!!!!')
+  // socket.
 
-app.listen(3000, function () {
+})
+
+server.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!')
 })

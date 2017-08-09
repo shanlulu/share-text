@@ -1,7 +1,18 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
-import {Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, getDefaultKeyBinding, KeyBindingUtil, ContentState, convertFromRaw, convertToRaw, createWithContent } from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  DefaultDraftBlockRenderMap,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
+  ContentState,
+  convertFromRaw,
+  convertToRaw,
+  createWithContent
+} from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route } from 'react-router-dom'
 import axios from 'axios'
@@ -250,7 +261,7 @@ class DocEditor extends React.Component {
   }
 
   saveEditorContent() {
-    const rawDraftContentState = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent()) );
+    const rawDraftContentState = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
     console.log('RAW', rawDraftContentState);
     axios({
       method: 'post',
@@ -268,7 +279,7 @@ class DocEditor extends React.Component {
 
   setEditorContent (rawDraftContentState) {
     console.log('RAW', rawDraftContentState);
-    const contentState = convertFromRaw( JSON.parse( rawDraftContentState) );
+    const contentState = convertFromRaw(JSON.parse(rawDraftContentState));
     const editorState = EditorState.createWithContent(contentState);
     this.setState({ editorState });
   }

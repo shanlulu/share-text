@@ -5,7 +5,6 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import { Link, Route, Redirect } from 'react-router-dom';
 
-
 class DocLibrary extends React.Component {
   constructor(props) {
     super(props)
@@ -19,7 +18,8 @@ class DocLibrary extends React.Component {
       redirect: false,
       docId: '',
       sharedDocID: '',
-      sharedDocPassword: ''
+      sharedDocPassword: '',
+      socket: io('http://localhost:3000')
     }
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -33,6 +33,9 @@ class DocLibrary extends React.Component {
   }
 
   componentDidMount() {
+    this.state.socket.on('connect', function() {
+      console.log('Connected!');
+    });
     axios({
       method: 'get',
       url: 'http://localhost:3000/getdocs'
@@ -40,6 +43,7 @@ class DocLibrary extends React.Component {
     .then(response => {
       var owned = [];
       var collab = [];
+
       response.data.docs.forEach(doc => {
         if (doc.owner === response.data.id) {
           owned = owned.concat(doc)
@@ -48,10 +52,19 @@ class DocLibrary extends React.Component {
         }
       })
       this.setState({owned: owned, collab: collab})
+
+
+
     })
     .catch(err => {
       console.log("Error fetching docs", err)
     })
+  }
+
+  click(doc) {
+    var msg = "Join " + doc._id
+    socket.emit('join1', msg);
+    console.log("Room!")
   }
 
   openModal() {
@@ -131,6 +144,7 @@ class DocLibrary extends React.Component {
       var url = "/editor/" + this.state.docId;
       return <Redirect to={url}/>
     }
+
     return (
       <div style={{ margin: "20px" }} className="body">
         <p className="docHeader">Your Document Library</p>
@@ -147,7 +161,7 @@ class DocLibrary extends React.Component {
           {this.state.owned.map(doc => {
             return (
               <div key={doc._id}>
-                <Link to={"/editor/"+doc._id}>
+                <Link to={"/editor/"+doc._id} onClick={(doc) => this.click(doc)}>
                   <li className="doc">
                     {doc.title}
                   </li>
@@ -162,7 +176,7 @@ class DocLibrary extends React.Component {
           {this.state.collab.map(doc => {
             return (
               <div key={doc._id}>
-                <Link to={"/editor/"+doc._id}>
+                <Link to={"/editor/"+doc._id} onClick={(doc) => this.click(doc)}>
                   <li className="doc">
                     {doc.title}
                   </li>
