@@ -95,7 +95,8 @@ class DocEditor extends React.Component {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
-      doc: {}
+      doc: {},
+      socket: io('http://localhost:3000')
     };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleBlockType = (type) => this._toggleBlockType(type);
@@ -103,6 +104,16 @@ class DocEditor extends React.Component {
   }
 
   componentWillMount() {
+    this.state.socket.on('connect', () => {
+      console.log('Connect Editor');
+      this.state.socket.emit('room', response.data._id);
+      console.log("ROOM: " + response.data._id)
+    });
+
+    this.state.socket.on('errorMessage', message => {
+      alert('There was an error connecting!', message)
+    });
+
     axios({
       method: 'post',
       url: 'http://localhost:3000/getdoc',

@@ -19,7 +19,6 @@ class MainApp extends React.Component {
   }
 
   loginClick() {
-    // console.log('TOGGLE LOGIN')
     this.setState({login: !this.state.login})
   }
 

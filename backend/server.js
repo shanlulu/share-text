@@ -238,8 +238,25 @@ app.post('/savedoc', function(req, res) {
 })
 
 io.on('connection', socket => {
-  console.log('connection!!!!')
-  // socket.
+  console.log('Connection')
+
+  socket.on('room', requestedRoom => {
+    console.log("ROOM : " + requestedRoom)
+    if (!requestedRoom) {
+      return socket.emit('errorMessage', 'No room!');
+    }
+    if (socket.room) {
+      socket.leave(socket.room);
+    }
+    socket.room = requestedRoom;
+    socket.join(requestedRoom, () => {
+      console.log("Joined room " + requestedRoom)
+      // io.to(requestedRoom).emit('message', {
+      //   username: 'System',
+      //   content: `${socket.username} has joined`
+      // });
+    });
+  });
 
 })
 

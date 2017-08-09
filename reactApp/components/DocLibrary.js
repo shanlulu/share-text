@@ -33,9 +33,10 @@ class DocLibrary extends React.Component {
   }
 
   componentDidMount() {
-    this.state.socket.on('connect', function() {
-      console.log('Connected!');
+    this.state.socket.on('connect', () => {
+      console.log('Connect Library');
     });
+
     axios({
       method: 'get',
       url: 'http://localhost:3000/getdocs'
@@ -52,9 +53,6 @@ class DocLibrary extends React.Component {
         }
       })
       this.setState({owned: owned, collab: collab})
-
-
-
     })
     .catch(err => {
       console.log("Error fetching docs", err)
@@ -62,9 +60,10 @@ class DocLibrary extends React.Component {
   }
 
   click(doc) {
-    var msg = "Join " + doc._id
-    socket.emit('join1', msg);
-    console.log("Room!")
+    console.log('Enter...')
+  //   var msg = "Join " + doc._id
+  //   this.state.socket.emit('join', msg);
+  //   console.log("MSG: " + msg)
   }
 
   openModal() {
