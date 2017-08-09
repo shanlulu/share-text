@@ -150,31 +150,52 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you own</p>
           {this.state.owned.map(doc => {
-            return (
-              <div key={doc._id}>
-                <Link to={"/editor/"+doc._id} onClick={(doc) => this.click(doc)}>
-                  <li className="doc">
+            if (doc.currWorkers.length > 5) {
+              return (
+                <div key={doc._id}>
+                  <li className="doc full">
                     {doc.title}
                   </li>
-                </Link>
-                <Route path={"/editor/"+doc._id} component={DocEditor} />
-              </div>
-            )
+                </div>
+              )
+            } else {
+              return (
+                <div key={doc._id}>
+                  <Link to={"/editor/"+doc._id}>
+                    <li className="doc">
+                      {doc.title}
+                    </li>
+                  </Link>
+                  <Route path={"/editor/"+doc._id} component={DocEditor} />
+                </div>
+              )
+            }
           })}
         </ul>
         <ul className="docList">
           <p className="libraryHeader">Docs you collaborate on</p>
           {this.state.collab.map(doc => {
-            return (
-              <div key={doc._id}>
-                <Link to={"/editor/"+doc._id} onClick={(doc) => this.click(doc)}>
-                  <li className="doc">
+            console.log(doc.currWorkers.length)
+            if (doc.currWorkers.length > 5) {
+              return (
+                <div key={doc._id}>
+                  <li className="doc full">
                     {doc.title}
                   </li>
-                </Link>
-                <Route path={"/editor/"+doc._id} component={DocEditor} />
-              </div>
-            )
+                </div>
+              )
+            } else {
+              return (
+                <div key={doc._id}>
+                  <Link to={"/editor/"+doc._id}>
+                    <li className="doc">
+                      {doc.title}
+                    </li>
+                  </Link>
+                  <Route path={"/editor/"+doc._id} component={DocEditor} />
+                </div>
+              )
+            }
           })}
         </ul>
         <form className="form-group" onSubmit={(e) => this.props.handleSubmit(e)}>

@@ -123,7 +123,9 @@ app.post('/newdoc', function(req, res) {
     password: hashPassword(req.body.password),
     owner: req.user._id,
     collaborators: [req.user._id],
-    content: ""
+    content: "",
+    currWorkers: [],
+    colors: ['red', 'blue', 'yellow', 'green', 'purple', 'orange']
   });
   newDoc.save(function(err, doc) {
     if (err) {
@@ -196,6 +198,10 @@ app.get('/getdocs', function(req, res) {
     if (err) {
       console.log("Error fetching docs", err)
     } else {
+      docs.forEach(doc => {
+        doc.currWorkers = []
+        doc.save();
+      })
       var id = req.user._id;
       res.send({docs, id});
     }
@@ -207,7 +213,32 @@ app.post('/getdoc', function(req, res) {
     if (err) {
       console.log("Error fetching doc", err)
     } else {
-      res.send(doc)
+      console.log('d',doc.currWorkers)
+      console.log(req.user.username)
+      if (req.body.mount) {
+        console.log('hi user')
+        if (!doc.currWorkers.includes('@' + req.user.username)) {
+          console.log('for real do')
+          doc.currWorkers.push('@' + req.user.username)
+        }
+      } else {
+        console.log('bye user')
+        var newWorkers = []
+        doc.currWorkers.forEach(worker => {
+          if (worker !== ('@' + req.user.username)) {
+            newWorkers.push(worker)
+          }
+          doc.currWorkers = newWorkers
+        })
+      }
+      console.log('Workers:', doc.currWorkers)
+      doc.save((err, d) => {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send(d)
+        }
+      })
     }
   })
 })
@@ -257,20 +288,48 @@ io.on('connection', socket => {
     }
     socket.room = requestedRoom;
     socket.join(requestedRoom, () => {
-      console.log("Joined room " + requestedRoom)
-      io.to(requestedRoom).emit('message', {
-        username: socket.username,
-        content: requestedRoom
+      socket.emit('joinMessage', {
+        content: 'YOU joined ' + requestedRoom
+      });
+      socket.to(requestedRoom).broadcast.emit('joinMessage', {
+        content: socket.username + ' joined ' + requestedRoom
       });
     });
   });
 
   socket.on('change', text => {
     console.log('Text: ', text)
-    io.to(socket.room).emit('message', {
-      username: socket.username,
-      content: 'CHANGE'
+    socket.emit('message', {
+      content: 'YOU changed the doc'
+    })
+    socket.to(socket.room).broadcast.emit('message', {
+      content: socket.username + ' changed the doc'
     });
+  })
+
+  socket.on('newWorker', workers => {
+    console.log('Work: ', workers)
+    socket.emit('message', {
+      content: workers
+    })
+    socket.to(socket.room).broadcast.emit('newWorker', workers);
+  })
+
+  socket.on('leave', requestedRoom => {
+    socket.leave(requestedRoom, () => {
+      socket.emit('leaveMessage', {
+        content: 'YOU left ' + requestedRoom
+      });
+      socket.to(requestedRoom).broadcast.emit('leaveMessage', {
+        content: socket.username + ' left ' + requestedRoom
+      });
+    });
+  })
+
+  socket.on('leaveWorker', workers => {
+    console.log('BYE: ', workers)
+    socket.emit('leaveWorker', workers)
+    socket.to(socket.room).broadcast.emit('leaveWorker', workers);
   })
 
 })
