@@ -228,7 +228,7 @@ app.post('/getdoc', function(req, res) {
         // if (!doc.currWorkers.includes('@' + req.user.username)) {
         if (!included) {
           console.log('for real do')
-          var
+          // var
           doc.currWorkers.push({
             name: '@' + req.user.username,
             color: 'blue'
