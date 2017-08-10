@@ -213,7 +213,6 @@ class DocEditor extends React.Component {
         }
       })
       .then(response => {
-        console.log('IN', response.data.currWorkers)
         this.setState({
           doc: response.data,
           workers: response.data.currWorkers
@@ -240,11 +239,9 @@ class DocEditor extends React.Component {
       console.log(data.content)
     })
     this.state.socket.on('newWorker', data => {
-      console.log('Hi', data)
       this.setState({workers: data})
     })
     this.state.socket.on('leaveWorker', data => {
-      console.log('Bye', data)
       this.setState({workers: data})
     })
     this.state.socket.on('reload', () => {
@@ -254,7 +251,6 @@ class DocEditor extends React.Component {
       const ownSelectionState = new SelectionState(this.state.cursor);
       const contentState = convertFromRaw(JSON.parse(data));
       const editorState = EditorState.createWithContent(contentState);
-      console.log('OWN', editorState.getSelection());
       let newEditorState = EditorState.acceptSelection(
         editorState,
         ownSelectionState
@@ -264,7 +260,6 @@ class DocEditor extends React.Component {
     })
 
     this.state.socket.on('highlight', selection => {
-      console.log('EDITOR ON HIGHLIGHT', selection);
       const updateSelection = new SelectionState({
   			anchorKey: selection.anchorKey,
   			anchorOffset: selection.anchorOffset,
@@ -306,14 +301,13 @@ class DocEditor extends React.Component {
       }
     })
     .then(response => {
-      console.log('OUT', response.data.currWorkers)
       this.state.socket.emit('leave', this.state.doc._id)
       this.state.socket.emit('leaveWorker', response.data.currWorkers);
       this.state.socket.on('leaveMessage', data => {
         console.log(data.content)
       })
       this.state.socket.on('leaveWorker', data => {
-        console.log('OUTTA HERE', data)
+        console.log(data)
       })
     })
   }
@@ -428,20 +422,6 @@ class DocEditor extends React.Component {
   }
 
   _onHighlight() {
-    // const selectionState = this.state.editorState.getSelection();
-    // const anchorKey = selectionState.getAnchorKey();
-    // const currentContent = this.state.editorState.getCurrentContent();
-    // const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-    // const start = selectionState.getStartOffset();
-    // const end = selectionState.getEndOffset();
-    // const selectedText = currentContentBlock.getText().slice(start, end);
-    // console.log('CURRENT CONTENT', currentContent);
-    // console.log('CURRENT CONTENT BLOCK', currentContentBlock);
-    // console.log('SELECTED TEXT', selectedText);
-    // this.state.socket.emit('highlight', {
-    //   block: currentContentBlock,
-    //   target: this
-    // });
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "HIGHLIGHT"
@@ -484,7 +464,6 @@ class DocEditor extends React.Component {
   }
 
   saveEditorContent() {
-    console.log('save')
     const rawDraftContentState = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
     axios({
       method: 'post',

@@ -30,6 +30,9 @@ class Register extends React.Component {
         this.setState({redirect: true})
       }
     })
+    .catch(err => {
+      console.log("Error submitting registration", err)
+    })
   }
 
   handleChangeName(e) {

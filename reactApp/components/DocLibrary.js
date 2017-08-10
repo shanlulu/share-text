@@ -148,7 +148,6 @@ class DocLibrary extends React.Component {
     })
     .then(response => {
       this.setState({modalIsOpen: false, redirect: true, docId: response.data.newDoc._id})
-      console.log('IN STATE', response.data.newDoc._id);
     })
   }
 

@@ -58,7 +58,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
     if (err) {
-      console.log('ERROR', err);
+      console.log('Error deserializing', err);
     } else {
       done(null, user);
     }
@@ -69,14 +69,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.post('/register', function(req, res) {
-  console.log('IN REGISTER');
   User.findOne({ username: req.body.username}, function(err, user) {
     if (err) {
-      console.log('ERROR', err);
+      console.log('Error finding user to register', err);
       res.status(404).send('ERROR');
     } else {
       if (user) {
-        console.log('SAME NAME');
         res.status(404).send('Try another name!');
       } else {
         var u = new User({
@@ -87,10 +85,9 @@ app.post('/register', function(req, res) {
         });
         u.save(function(err, user) {
           if (err) {
-            console.log('ERROR', err);
+            console.log('Error saving upon registration', err);
             res.status(404).send('ERROR!');
           } else {
-            console.log('SAVED', user);
             res.status(200).send('REGISTERED!');
           }
         });
@@ -101,7 +98,6 @@ app.post('/register', function(req, res) {
 
 
 app.post('/login', function(req, res, next) {
-  console.log('IN LOGIN');
     passport.authenticate('local', function(err, user, info) {
       if (err) { return res.status(404).send('ERROR'); }
       if (!user) { return res.status(404).send('NO USER'); }
@@ -131,23 +127,21 @@ app.post('/newdoc', function(req, res) {
   });
   newDoc.save(function(err, doc) {
     if (err) {
-      console.log('ERROR', err);
+      console.log('Error saving new document', err);
       res.status(404).send('ERROR');
     } else {
-      console.log('SAVED DOC', doc);
       User.findById(req.user._id, function(err, user) {
         if (err) {
-          console.log('ERROR', err);
+          console.log('Error finding owner of new doc', err);
           res.status(404).send('ERROR');
         } else {
           user.ownedDocs.push(doc._id);
           user.collabDocs.push(doc._id);
           user.save(function(err, newUser) {
             if (err) {
-              console.log('ERROR', err);
+              console.log('Error saving user as owner of doc', err);
               res.status(404).send('ERROR');
             } else {
-              console.log('SAVED USER', newUser);
               res.status(200).send({
                 newDoc: doc,
                 newUser: newUser
@@ -176,14 +170,12 @@ app.post('/docauth2', function(req, res) {
       doc.collaborators.push(req.user._id);
       doc.save(function(err, newdoc) {
         if (err) {
-          console.log('ERROR', err);
+          console.log('Error authorizing new user for document', err);
           res.status(404).send('ERROR');
         } else {
-          console.log('SAVED DOC', newdoc);
           User.findById(req.user._id, function(err, user) {
             user.collabDocs.push(req.body.docId);
             user.save(function(err, newuser) {
-              console.log('SAVED USER', newuser);
               res.status(200).send("FREE TO VISIT THE DOC!");
             })
           })
@@ -242,7 +234,7 @@ app.post('/getdoc', function(req, res) {
       }
       doc.save((err, d) => {
         if (err) {
-          console.log(err)
+          console.log('Error saving doc in getDoc', err)
         } else {
           res.send(d)
         }
@@ -252,17 +244,15 @@ app.post('/getdoc', function(req, res) {
 })
 
 app.get('/checkuser', function(req, res) {
-  console.log('CHECKUSER', req.user);
   res.send(req.user);
 })
 
 app.post('/savedoc', function(req, res) {
   Doc.findById(req.body.id, function(err, doc) {
     if (err) {
-      console.log('ERROR', err);
+      console.log('Error finding doc to save', err);
       res.status(404).send('CANNOT FIND DOC');
     } else {
-      console.log('FOUND DOC', doc);
       doc.content = req.body.content;
       var now = new Date()
       var date = now.toISOString()
@@ -272,13 +262,11 @@ app.post('/savedoc', function(req, res) {
         date: date,
         time: time
       })
-      console.log('HIST', doc.history)
       doc.save(function(err, newDoc) {
         if (err) {
-          console.log('ERRRRRRR', err);
+          console.log('Error saving doc in save doc', err);
           res.status(404).send('CANNOT SAVE DOC');
         } else {
-          console.log('SAVED', newDoc);
           res.status(200).send(newDoc);
         }
       })
@@ -287,7 +275,6 @@ app.post('/savedoc', function(req, res) {
 })
 
 app.post('/version', function(req, res) {
-  console.log("SAVING VERSIONS")
   Doc.findById(req.body.id, function(err, doc) {
     if (err) {
       console.log('Error finding doc to save version', err)
@@ -301,7 +288,6 @@ app.post('/version', function(req, res) {
         time: time
       })
       doc.content = req.body.log.text;
-      console.log('VERSION', doc.version)
       doc.save(function(err, saved) {
         if (err) {
           console.log('Error saving version', err)
@@ -322,7 +308,6 @@ io.on('connection', socket => {
   });
 
   socket.on('room', requestedRoom => {
-    console.log("ROOM : " + requestedRoom)
     if (!requestedRoom) {
       return socket.emit('errorMessage', 'No room!');
     }
@@ -347,13 +332,10 @@ io.on('connection', socket => {
   })
 
   socket.on('highlight', content => {
-    console.log('SERVER ON HIGHLIGHT', content);
-    //io.to(socket.room).emit('highlight', content);
     socket.to(socket.room).broadcast.emit('highlight', content);
   })
 
   socket.on('newWorker', workers => {
-    console.log('Work: ', workers)
     socket.emit('message', {
       content: workers
     })
@@ -373,7 +355,6 @@ io.on('connection', socket => {
   })
 
   socket.on('leaveWorker', workers => {
-    console.log('BYE: ', workers)
     socket.emit('leaveWorker', workers)
     socket.to(socket.room).broadcast.emit('leaveWorker', workers);
   })

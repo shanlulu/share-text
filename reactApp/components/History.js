@@ -100,8 +100,6 @@ class History extends React.Component {
     })
     .then(response => {
       const contentState = convertFromRaw(JSON.parse(response.data.content));
-      // console.log('CONTENT STATE', contentState.getPlainText());
-      //const editorState = EditorState.createWithContent(contentState);
       const editorState = EditorState.createWithContent(contentState);
       this.setState({
         doc: response.data,
@@ -116,14 +114,11 @@ class History extends React.Component {
 
   select(log, i) {
     const contentState = convertFromRaw(JSON.parse(log.text));
-    console.log('OLD STATE', contentState.getPlainText());
     const editorState = EditorState.createWithContent(contentState);
-    // this.setState({ current: editorState });
     this.setState({old: editorState, index: i})
   }
 
   restore(index) {
-    console.log("AT ", this.state.history[index])
     axios({
       method: 'post',
       url: 'http://localhost:3000/version',
@@ -133,11 +128,8 @@ class History extends React.Component {
         content: this.state.doc.content
       }
     })
-    .then(response => {
-      console.log('DID IT')
-    })
     .catch(err => {
-      console.log("DIDN'T", err)
+      console.log("Error restoring", err)
     })
   }
 
@@ -154,21 +146,16 @@ class History extends React.Component {
             <div className="editContainer">
               <div className="editBox">
                 <p className="libraryHeader">Current Doc</p>
-                {/*<p className="docID">{this.state.current}</p> */}
                 <Editor
                   customStyleMap={styleMap}
                   editorState={this.state.current}
                   onChange={(e) => {console.log(e);}}
-                  // placeholder="Enter your text below"
                   blockRenderMap={extendedBlockRenderMap}
-                  // keyBindingFn={keyBindingFn}
-                  // handleKeyCommand={this.handleKeyCommand}
                   readOnly="true"
                 />
               </div>
               <div className="editBox">
                 <p className="libraryHeader">Saved Doc</p>
-                {/* <p className="docID">{this.state.old}</p> */}
                 <Editor
                   customStyleMap={styleMap}
                   editorState={this.state.old}

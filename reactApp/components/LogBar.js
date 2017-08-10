@@ -18,9 +18,7 @@ class LogBar extends React.Component {
       url: 'http://localhost:3000/checkuser'
     })
     .then(response => {
-      // console.log('r', response.data)
       if (response.data && !this.props.login) {
-        // console.log('in')
         this.state.loginClick();
       }
     })
@@ -32,9 +30,7 @@ class LogBar extends React.Component {
       url: 'http://localhost:3000/logout'
     })
     .then(response => {
-      // console.log(this.props.login)
       if (this.props.login) {
-        // console.log('out')
         this.state.loginClick();
       }
     })
