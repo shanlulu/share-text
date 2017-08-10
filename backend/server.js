@@ -198,8 +198,10 @@ app.get('/getdocs', function(req, res) {
     if (err) {
       console.log("Error fetching docs", err)
     } else {
+      // RESET FUNCTION
       docs.forEach(doc => {
         doc.currWorkers = []
+        doc.colors = ['red', 'blue', 'yellow', 'green', 'purple', 'orange'];
         doc.save();
       })
       var id = req.user._id;
@@ -214,18 +216,29 @@ app.post('/getdoc', function(req, res) {
       console.log("Error fetching doc", err)
     } else {
       console.log('d',doc.currWorkers)
+      
       console.log(req.user.username)
       if (req.body.mount) {
         console.log('hi user')
-        if (!doc.currWorkers.includes('@' + req.user.username)) {
+        var included = false;
+        doc.currWorkers.forEach(worker => {
+          if (worker.name === ('@' + req.user.username)) {
+            included = true;
+          }
+        })
+        // if (!doc.currWorkers.includes('@' + req.user.username)) {
+        if (!included) {
           console.log('for real do')
-          doc.currWorkers.push('@' + req.user.username)
+          doc.currWorkers.push({
+            name: '@' + req.user.username,
+            color: 'blue'
+          })
         }
       } else {
         console.log('bye user')
         var newWorkers = []
         doc.currWorkers.forEach(worker => {
-          if (worker !== ('@' + req.user.username)) {
+          if (worker.name !== ('@' + req.user.username)) {
             newWorkers.push(worker)
           }
           doc.currWorkers = newWorkers
@@ -244,6 +257,7 @@ app.post('/getdoc', function(req, res) {
 })
 
 app.get('/checkuser', function(req, res) {
+  console.log('CHECKUSER', req.user);
   res.send(req.user);
 })
 
@@ -297,14 +311,13 @@ io.on('connection', socket => {
     });
   });
 
-  socket.on('change', text => {
-    console.log('Text: ', text)
-    socket.emit('message', {
-      content: 'YOU changed the doc'
-    })
-    socket.to(socket.room).broadcast.emit('message', {
-      content: socket.username + ' changed the doc'
-    });
+  socket.on('change', rawContent => {
+    socket.to(socket.room).broadcast.emit('change', rawContent);
+  })
+
+  socket.on('highlight', content => {
+    console.log('SERVER HIGHLIGHT', content);
+    io.to(socket.room).emit('highlight', content);
   })
 
   socket.on('newWorker', workers => {

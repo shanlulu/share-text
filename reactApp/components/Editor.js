@@ -73,6 +73,9 @@ const styleMap = {
   },
   'PURPLE': {
     color: 'purple'
+  },
+  'HIGHLIGHT': {
+    backgroundColor: '#fff493'
   }
 }
 
@@ -101,15 +104,22 @@ class DocEditor extends React.Component {
       redirect: false
     };
     this.onChange = (editorState) => {
-      this.state.socket.emit('change', editorState);
-      this.setState({editorState: editorState});
-      // console.log('editor state: ', this.state.editorState)
+      console.log('SELECTION', this.state.editorState.getSelection());
+      // if (this.previousHighlight)
+      // highlightStyle
+      // acceptSelection
+      //
+      const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+      this.state.socket.emit('change', rawContent);
+      this.setState({editorState});
+      this.state.socket.emit('newEdit', editorState);
     }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
 
   componentWillMount() {
+
     this.state.socket.on('connect', () => {
       console.log('Connect Editor');
     });
@@ -154,6 +164,9 @@ class DocEditor extends React.Component {
   }
 
   componentDidMount() {
+    var highlight = window.getSelection();
+    this.state.socket.emit('highlight', highlight);
+
     this.state.socket.on('joinMessage', data => {
       console.log(data.content)
     })
@@ -167,6 +180,13 @@ class DocEditor extends React.Component {
     this.state.socket.on('leaveWorker', data => {
       console.log('Bye', data)
       this.setState({workers: data})
+    })
+    this.state.socket.on('change', data => {
+      console.log('CHANGE DATA', data);
+      this.setEditorContent(data.rawContent);
+    })
+    this.state.socket.on('highlight', data => {
+      console.log('EDITOR HIGHLIGHT', data);
     })
   }
 
@@ -302,6 +322,13 @@ class DocEditor extends React.Component {
     ));
   }
 
+  _onHighlight() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      "HIGHLIGHT"
+    ));
+  }
+
   handleKeyCommand(command: string): DraftHandleValue {
     if (command === 'bold') {
       this.onChange(RichUtils.toggleInlineStyle(
@@ -385,7 +412,7 @@ class DocEditor extends React.Component {
             {this.state.workers.map((worker, i) => {
               return (
                 <li key={i} className="doc">
-                  {worker}
+                  {worker.name}
                 </li>
               )
             })}
@@ -431,6 +458,8 @@ class DocEditor extends React.Component {
             <span title="Align Right"><button className="styleButton" type="button" onClick={this._onRightAlignClick.bind(this)}><span className="glyphicon glyphicon-align-right"></span></button></span>
             <span title="Bullet List"><button className="styleButton" type="button" onClick={this._onULClick.bind(this)}><span className="glyphicon glyphicon-list"></span></button></span>
             <span title="Numbered List"><button className="styleButton" type="button" onClick={this._onOLClick.bind(this)}><span className="glyphicon glyphicon-sort-by-order"></span></button></span>
+            <span title="Highlight"><button className="styleButton" type="button" onClick={this._onHighlight.bind(this)}><span className="glyphicon glyphicon-adjust"></span></button></span>
+
           </div>
           <div className="editor">
             <Editor

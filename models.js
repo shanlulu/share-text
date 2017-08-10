@@ -27,7 +27,10 @@ var docSchema = mongoose.Schema({
     ref: 'User'
   }],
   content: String,
-  currWorkers: [String],
+  currWorkers: [{
+    name: String,
+    color: String
+  }],
   colors: [String]
 })
 
