@@ -126,7 +126,8 @@ app.post('/newdoc', function(req, res) {
     content: "",
     currWorkers: [],
     colors: ['red', 'blue', 'cyan', 'green', 'purple', 'orange'],
-    history: []
+    history: [],
+    version: ''
   });
   newDoc.save(function(err, doc) {
     if (err) {
@@ -199,16 +200,8 @@ app.get('/getdocs', function(req, res) {
     if (err) {
       console.log("Error fetching docs", err)
     } else {
-      // RESET FUNCTION
+      // 'SET NEW MODEL PROPERTY' FUNCTION
       // docs.forEach(doc => {
-      //   doc.currWorkers = []
-      //   doc.colors = ['red', 'blue', 'cyan', 'green', 'purple', 'orange'];
-      //   doc.history = []
-      //   // doc.history = [{
-      //   //   text: 'hi',
-      //   //   time: new Date().toLocaleTimeString(),
-      //   //   date: new Date().toISOString()
-      //   // }]
       //   doc.save();
       // })
       var id = req.user._id;
@@ -287,6 +280,31 @@ app.post('/savedoc', function(req, res) {
         } else {
           console.log('SAVED', newDoc);
           res.status(200).send(newDoc);
+        }
+      })
+    }
+  })
+})
+
+app.post('/version', function(req, res) {
+  console.log("SAVING VERSIONS")
+  Doc.findById(req.body.id, function(err, doc) {
+    if (err) {
+      console.log('Error finding doc to save version', err)
+    } else {
+      var now = new Date()
+      var date = now.toISOString()
+      var time = now.toLocaleTimeString()
+      doc.history.push({
+        text: req.body.content,
+        date: date,
+        time: time
+      })
+      doc.content = req.body.log.text;
+      console.log('VERSION', doc.version)
+      doc.save(function(err, saved) {
+        if (err) {
+          console.log('Error saving version', err)
         }
       })
     }

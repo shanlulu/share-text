@@ -36,7 +36,8 @@ var docSchema = mongoose.Schema({
     text: String,
     date: String,
     time: String
-  }]
+  }],
+  version: String
 })
 
 User = mongoose.model('User', userSchema)

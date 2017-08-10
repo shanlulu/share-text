@@ -25,11 +25,12 @@ class History extends React.Component {
       doc: {},
       history: [],
       current: '',
-      old: 'Select a saved version of this document to compare'
+      old: 'Select a saved version of this document to compare',
+      index: -1
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios({
       method: 'post',
       url: 'http://localhost:3000/getdoc',
@@ -49,8 +50,27 @@ class History extends React.Component {
     })
   }
 
-  select(log) {
-    this.setState({old: log.text})
+  select(log, i) {
+    this.setState({old: log.text, index: i})
+  }
+
+  restore(index) {
+    console.log("AT ", this.state.history[index])
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/version',
+      data: {
+        id: this.state.doc._id,
+        log: this.state.history[index],
+        content: this.state.doc.content
+      }
+    })
+    .then(response => {
+      console.log('DID IT')
+    })
+    .catch(err => {
+      console.log("DIDN'T", err)
+    })
   }
 
   render() {
@@ -94,12 +114,13 @@ class History extends React.Component {
               </div>
             </div>
             <div className="histContainer">
-              <div className="editBox">
+              <div className="editBox scrollmenu">
                 <p className="libraryHeader">Save Logs</p>
                 {
                   this.state.history.map((log, i) => {
                     return (
-                      <div key={i} className="log" onClick={() => this.select(log)}>
+                      <div key={i} className="log" onClick={() => this.select(log, i)}>
+                        <text className="docID" style={{color: '#94B0DA'}}>{"Revision " + (i+1)}</text><br/>
                         <text className="docID">{log.date.slice(0, 10)}</text><br/>
                         <text className="docID">{log.time}</text>
                       </div>
@@ -120,7 +141,7 @@ class History extends React.Component {
               handleKeyCommand={this.handleKeyCommand}
             />
           </div> */}
-          <Link to={"/editor/"+this.state.doc._id} onClick={() => this.restore()}>
+          <Link to={"/editor/"+this.state.doc._id} onClick={() => this.restore(this.state.index)}>
             <button type="button" className="backButton">
               Restore History
             </button>

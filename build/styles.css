@@ -178,6 +178,7 @@
   margin: 5px;
   background-color: #94B0DA;
   width: 65%;
+  /*height: 270px;*/
 }
 .editBox {
   border: 1px solid #505A5B;
@@ -186,6 +187,9 @@
   /*margin-left: 0px;*/
   /*margin-bottom: 10px;*/
   background-color: #DCEDFF;
+  height: 125px;
+  margin: 5px;
+  overflow: scroll
 }
 .histContainer {
   border: 2px solid #505A5B;
@@ -194,6 +198,7 @@
   margin: 10px;
   background-color: #94B0DA;
   width: 35%;
+  height: 270px;
 }
 .log {
   border: 1px solid #505A5B;
@@ -204,4 +209,8 @@
 }
 .highlightText {
   background: linear-gradient( #fdb99b, #fd746c);
+}
+.scrollmenu {
+  overflow: scroll;
+  height: 250px;
 }
