@@ -125,7 +125,7 @@ app.post('/newdoc', function(req, res) {
     collaborators: [req.user._id],
     content: "",
     currWorkers: [],
-    colors: ['red', 'blue', 'cyan', 'green', 'purple', 'orange']
+    colors: ['red', 'blue', 'pink', 'green', 'purple', 'orange']
   });
   newDoc.save(function(err, doc) {
     if (err) {
@@ -201,7 +201,7 @@ app.get('/getdocs', function(req, res) {
       // RESET FUNCTION
       // docs.forEach(doc => {
       //   doc.currWorkers = []
-      //   doc.colors = ['red', 'blue', 'cyan', 'green', 'purple', 'orange'];
+      //   doc.colors = ['red', 'blue', 'pink', 'green', 'purple', 'orange'];
       //   doc.save();
       // })
       var id = req.user._id;
