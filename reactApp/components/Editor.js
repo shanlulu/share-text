@@ -103,7 +103,14 @@ class DocEditor extends React.Component {
       doc: {},
       socket: io('http://localhost:3000'),
       workers: [],
-      redirect: false
+      redirect: false,
+      cursor: {
+        anchorKey: '',
+        anchorOffset: 0,
+        focusKey: '',
+        focusOffset: 0,
+        isBackward: false
+      }
     };
     this.onChange = (editorState) => {
       const selectionState = editorState.getSelection();
@@ -116,7 +123,13 @@ class DocEditor extends React.Component {
         // const selectedText = currentContentBlock.getText().slice(start, end);
         this.state.socket.emit('highlight', selectionState);
       } else {
-        this.state.socket.emit('cursor', selectionState);
+        this.setState({cursor: {
+          anchorKey: selectionState.anchorKey,
+    			anchorOffset: selectionState.anchorOffset,
+    			focusKey: selectionState.focusKey,
+    			focusOffset: selectionState.focusOffset,
+    			isBackward: selectionState.isBackward
+        }})
       }
       const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
       this.state.socket.emit('change', rawContent);
@@ -186,21 +199,13 @@ class DocEditor extends React.Component {
       this.setState({workers: data})
     })
     this.state.socket.on('change', data => {
-      this.setEditorContent(data);
-    })
-    this.state.socket.on('cursor', selection => {
-      console.log('EDITOR ON CURSOR', selection);
-      // const mySelection = this.state.editorState.getSelection();
-      const updateSelection = new SelectionState({
-  			anchorKey: selection.anchorKey,
-  			anchorOffset: selection.anchorOffset,
-  			focusKey: selection.anchorKey,
-  			focusOffset: selection.focusOffset,
-  			isBackward: selection.isBackward
-  		});
+      const ownSelectionState = new SelectionState(this.state.cursor);
+      const contentState = convertFromRaw(JSON.parse(data));
+      const editorState = EditorState.createWithContent(contentState);
+      console.log('OWN', editorState.getSelection());
       let newEditorState = EditorState.acceptSelection(
-        this.state.editorState,
-        updateSelection
+        editorState,
+        ownSelectionState
       );
       newEditorState = EditorState.forceSelection(newEditorState, newEditorState.getSelection());
       this.setState({editorState: newEditorState});
@@ -211,9 +216,9 @@ class DocEditor extends React.Component {
       const updateSelection = new SelectionState({
   			anchorKey: selection.anchorKey,
   			anchorOffset: selection.anchorOffset,
-  			focusKey: selection.anchorKey,
+  			focusKey: selection.focusKey,
   			focusOffset: selection.focusOffset,
-  			isBackward: false
+  			isBackward: selection.isBackward
   		});
       let newEditorState = EditorState.acceptSelection(
         this.state.editorState,
@@ -223,7 +228,7 @@ class DocEditor extends React.Component {
       // const newContentState = Modifier.applyInlineStyle(
       //   newEditorState.getCurrentContent(),
       //   updateSelection,
-      //   'HIGHLIGHT'
+      //   'HIGHLInGHT'
       // )
       // newEditorState = EditorState.createWithContent(newContentState);
       //this.onChange(newEditorState);
@@ -519,7 +524,6 @@ class DocEditor extends React.Component {
               customStyleMap={styleMap}
               editorState={this.state.editorState}
               onChange={this.onChange}
-              onHighlight={this.onHighlight}
               placeholder="Enter your text below"
               blockRenderMap={extendedBlockRenderMap}
               keyBindingFn={keyBindingFn}

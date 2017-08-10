@@ -317,12 +317,6 @@ io.on('connection', socket => {
     socket.to(socket.room).broadcast.emit('highlight', content);
   })
 
-  socket.on('cursor', content => {
-    console.log('SERVER ON CURSOR', content);
-    //io.to(socket.room).emit('highlight', content);
-    socket.to(socket.room).broadcast.emit('cursor', content);
-  })
-
   socket.on('newWorker', workers => {
     console.log('Work: ', workers)
     socket.emit('message', {
