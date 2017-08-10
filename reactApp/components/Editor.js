@@ -212,7 +212,6 @@ class DocEditor extends React.Component {
   }
 
   componentDidMount() {
-
     this.state.socket.on('joinMessage', data => {
       console.log(data.content)
     })
@@ -269,6 +268,8 @@ class DocEditor extends React.Component {
       // this._onHighlight.bind(this)
       this.setState({editorState: newEditorState});
     })
+
+    // setInterval(this.saveEditorContent(), 1000*30)
   }
 
   componentWillUnmount() {
@@ -459,6 +460,7 @@ class DocEditor extends React.Component {
   }
 
   saveEditorContent() {
+    console.log('save')
     const rawDraftContentState = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
     axios({
       method: 'post',
@@ -509,7 +511,7 @@ class DocEditor extends React.Component {
             <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
             <form onSubmit={(e) => this.handleSubmit(e)}>
               <div style={{display: 'flex', flex: 1}} className="form-group">
-                <label>Search: </label>
+                <text className="docID">Search: </text>
                 <input
                   onChange={this.onChangeSearch.bind(this)}
                   type="text"

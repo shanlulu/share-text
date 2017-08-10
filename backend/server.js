@@ -338,6 +338,7 @@ io.on('connection', socket => {
         content: socket.username + ' joined ' + requestedRoom
       });
       socket.to('library').broadcast.emit('reload')
+      socket.to(requestedRoom).broadcast.emit('reload')
     });
   });
 
