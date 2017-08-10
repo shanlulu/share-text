@@ -176,12 +176,18 @@ class DocEditor extends React.Component {
     })
     this.state.socket.on('change', data => {
       console.log('CHANGE DATA', data);
-      this.setEditorContent(data.rawContent);
+      this.setEditorContent(data);
     })
     this.state.socket.on('highlight', data => {
       console.log('EDITOR HIGHLIGHT', data);
     })
   }
+
+
+    // setInterval(() => {
+    //   var selObj = window.getSelection();
+    //   window.alert(selObj);
+    // }, 9000);
 
   componentWillUnmount() {
     axios({
