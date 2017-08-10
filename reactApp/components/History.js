@@ -120,6 +120,7 @@ class History extends React.Component {
     const editorState = EditorState.createWithContent(contentState);
     // this.setState({ current: editorState });
     this.setState({old: editorState, index: i})
+  }
 
   restore(index) {
     console.log("AT ", this.state.history[index])

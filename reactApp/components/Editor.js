@@ -110,7 +110,7 @@ const generateDecorator = (highlightTerm) => {
 };
 
 const findWithRegex = (regex, contentBlock, callback) => {
-  const text = contentBlock.getText();
+  const text = contentBlock.getText().toLowerCase();
   let matchArr, start, end;
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;
