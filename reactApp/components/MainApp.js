@@ -5,6 +5,7 @@ import Login from './Login.js';
 import DocLibrary from './DocLibrary.js';
 import DocEditor from './Editor.js';
 import LogBar from './LogBar.js';
+import History from './History.js'
 import { HashRouter, Link, Route } from 'react-router-dom';
 import { Switch } from 'react-router'
 
@@ -33,6 +34,7 @@ class MainApp extends React.Component {
             <Route path="/logout" component={Login}/>
             <Route path="/library" component={DocLibrary}/>
             <Route path="/editor/:docId" component={DocEditor}/>
+            <Route path="/history/:docId" component={History}/>
           </Switch>
           <LogBar loginClick={() => this.loginClick()} login={this.state.login}/>
         </div>

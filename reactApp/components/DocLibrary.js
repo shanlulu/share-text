@@ -195,7 +195,6 @@ class DocLibrary extends React.Component {
                       {doc.title}
                     </li>
                   </Link>
-                  <Route path={"/editor/"+doc._id} component={DocEditor} />
                 </div>
               )
             } else {
@@ -220,7 +219,6 @@ class DocLibrary extends React.Component {
                       {doc.title}
                     </li>
                   </Link>
-                  <Route path={"/editor/"+doc._id} component={DocEditor} />
                 </div>
               )
             } else {

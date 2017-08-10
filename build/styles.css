@@ -66,6 +66,7 @@
 .backButton{
   margin-top: 10px;
   margin-bottom: 5px;
+  margin-right: 10px;
   background-color: white;
   border: 1px solid #505A5B;
   border-radius: 5px;
@@ -163,6 +164,43 @@
 .error {
   color: red;
   font-family: 'Saira', sans-serif;
+}
+
+/* History classes */
+.bigBox {
+  display: flex;
+  padding: 5px;
+}
+.editContainer {
+  border: 2px solid #505A5B;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  background-color: #94B0DA;
+  width: 65%;
+}
+.editBox {
+  border: 1px solid #505A5B;
+  border-radius: 5px;
+  padding: 2px;
+  /*margin-left: 0px;*/
+  /*margin-bottom: 10px;*/
+  background-color: #DCEDFF;
+}
+.histContainer {
+  border: 2px solid #505A5B;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  background-color: #94B0DA;
+  width: 35%;
+}
+.log {
+  border: 1px solid #505A5B;
+  border-radius: 3px;
+  background-color: white;
+  margin: 2px;
+  text-align: center;
 }
 .highlightText {
   background: linear-gradient( #fdb99b, #fd746c);
