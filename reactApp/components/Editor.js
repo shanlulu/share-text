@@ -488,7 +488,6 @@ class DocEditor extends React.Component {
     search,
     editorState: EditorState.set(this.state.editorState, { decorator: generateDecorator(search) }),
   })
-  console.log("SEARCHING FOR: ", this.state.search)
 }
 
   render() {
@@ -513,10 +512,10 @@ class DocEditor extends React.Component {
               )
             })}
           </ul>
-          <div style={{display: 'flex', }}>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
             <form onSubmit={(e) => this.handleSubmit(e)}>
-              <div style={{display: 'flex', flexDirection: 'row'}} className="form-group">
+              <div style={{display: 'flex', flex: 1}} className="form-group">
                 <label>Search: </label>
                 <input
                   onChange={this.onChangeSearch.bind(this)}
