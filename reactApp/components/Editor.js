@@ -460,7 +460,6 @@ class DocEditor extends React.Component {
 
   saveEditorContent() {
     const rawDraftContentState = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
-    // console.log('RAW', rawDraftContentState);
     axios({
       method: 'post',
       url: 'http://localhost:3000/savedoc',
@@ -470,13 +469,11 @@ class DocEditor extends React.Component {
       }
     })
     .then(updatedDoc => {
-      // console.log('SAVED', updatedDoc)
       this.setState({doc: updatedDoc.data})
     })
   }
 
   setEditorContent (rawDraftContentState) {
-    // console.log('RAW', rawDraftContentState);
     const contentState = convertFromRaw(JSON.parse(rawDraftContentState));
     const editorState = EditorState.createWithContent(contentState);
     this.setState({ editorState });
@@ -488,14 +485,9 @@ class DocEditor extends React.Component {
     search,
     editorState: EditorState.set(this.state.editorState, { decorator: generateDecorator(search) }),
   })
-  console.log("SEARCHING FOR: ", this.state.search)
 }
 
   render() {
-    // if (this.state.redirect) {
-    //   return <Redirect to="/library"/>
-    // }
-
     return (
       <div>
         <div style={{ margin: "20px" }} className="body">
@@ -513,10 +505,10 @@ class DocEditor extends React.Component {
               )
             })}
           </ul>
-          <div style={{display: 'flex', }}>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
             <form onSubmit={(e) => this.handleSubmit(e)}>
-              <div style={{display: 'flex', flexDirection: 'row'}} className="form-group">
+              <div style={{display: 'flex', flex: 1}} className="form-group">
                 <label>Search: </label>
                 <input
                   onChange={this.onChangeSearch.bind(this)}
