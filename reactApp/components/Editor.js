@@ -163,7 +163,7 @@ class DocEditor extends React.Component {
 
     this.state.socket.on('change', data => {
       console.log('CHANGE DATA', data);
-      this.setEditorContent(data.rawContent);
+      this.setEditorContent(data);
     })
 
     this.state.socket.on('highlight', data => {
@@ -175,10 +175,6 @@ class DocEditor extends React.Component {
     //   var selObj = window.getSelection();
     //   window.alert(selObj);
     // }, 9000);
-    this.state.socket.on('newEdit', content => {
-      console.log('NEW EDIT: ', content);
-      this.setState({ editor})
-    });
   }
 
   _onFontSizeClick() {
