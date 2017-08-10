@@ -158,9 +158,9 @@ class DocEditor extends React.Component {
     			focusOffset: selectionState.focusOffset,
     			isBackward: selectionState.isBackward
         }})
+        const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+        this.state.socket.emit('change', rawContent);
       }
-      const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-      this.state.socket.emit('change', rawContent);
       this.setState({editorState});
     }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
