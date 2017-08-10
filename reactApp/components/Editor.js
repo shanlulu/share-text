@@ -168,6 +168,27 @@ class DocEditor extends React.Component {
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
 
+  refresh() {
+    axios({
+      method: 'get',
+      url: 'http://localhost:3000/getdoc',
+      data: {
+        mount: true,
+        id: this.state.doc._id
+      }
+    })
+    .then(response => {
+      this.setState({
+        doc: response.data,
+        workers: response.data.currWorkers
+      })
+      this.setEditorContent(response.data.content)
+    })
+    .catch(err => {
+      console.log("Error reloading doc", err)
+    })
+  }
+
   componentWillMount() {
     this.state.socket.on('connect', () => {
       console.log('Connect Editor');
@@ -212,7 +233,6 @@ class DocEditor extends React.Component {
   }
 
   componentDidMount() {
-
     this.state.socket.on('joinMessage', data => {
       console.log(data.content)
     })
@@ -226,6 +246,9 @@ class DocEditor extends React.Component {
     this.state.socket.on('leaveWorker', data => {
       console.log('Bye', data)
       this.setState({workers: data})
+    })
+    this.state.socket.on('reload', () => {
+      this.refresh();
     })
     this.state.socket.on('change', data => {
       const ownSelectionState = new SelectionState(this.state.cursor);
@@ -269,6 +292,8 @@ class DocEditor extends React.Component {
       // this._onHighlight.bind(this)
       this.setState({editorState: newEditorState});
     })
+
+    // setInterval(this.saveEditorContent(), 1000*30)
   }
 
   componentWillUnmount() {
@@ -459,6 +484,7 @@ class DocEditor extends React.Component {
   }
 
   saveEditorContent() {
+    console.log('save')
     const rawDraftContentState = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
     axios({
       method: 'post',
@@ -509,7 +535,7 @@ class DocEditor extends React.Component {
             <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
             <form onSubmit={(e) => this.handleSubmit(e)}>
               <div style={{display: 'flex', flex: 1}} className="form-group">
-                <label>Search: </label>
+                <text className="docID">Search: </text>
                 <input
                   onChange={this.onChangeSearch.bind(this)}
                   type="text"
