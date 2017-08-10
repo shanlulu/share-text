@@ -312,8 +312,15 @@ io.on('connection', socket => {
   })
 
   socket.on('highlight', content => {
-    console.log('SERVER HIGHLIGHT', content);
-    io.to(socket.room).emit('highlight', content);
+    console.log('SERVER ON HIGHLIGHT', content);
+    //io.to(socket.room).emit('highlight', content);
+    socket.to(socket.room).broadcast.emit('highlight', content);
+  })
+
+  socket.on('cursor', content => {
+    console.log('SERVER ON CURSOR', content);
+    //io.to(socket.room).emit('highlight', content);
+    socket.to(socket.room).broadcast.emit('cursor', content);
   })
 
   socket.on('newWorker', workers => {

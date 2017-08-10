@@ -4,6 +4,7 @@ import DocLibrary from './DocLibrary.js'
 import {
   Editor,
   EditorState,
+  SelectionState,
   RichUtils,
   DefaultDraftBlockRenderMap,
   getDefaultKeyBinding,
@@ -11,7 +12,8 @@ import {
   ContentState,
   convertFromRaw,
   convertToRaw,
-  createWithContent
+  createWithContent,
+  Modifier
 } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route, Redirect } from 'react-router-dom'
@@ -104,7 +106,18 @@ class DocEditor extends React.Component {
       redirect: false
     };
     this.onChange = (editorState) => {
-      console.log('SELECTION', this.state.editorState.getSelection());
+      const selectionState = editorState.getSelection();
+      if (!selectionState.isCollapsed()) {
+        // const anchorKey = selectionState.getAnchorKey();
+        // const currentContent = editorState.getCurrentContent();
+        // const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+        // const start = selectionState.getStartOffset();
+        // const end = selectionState.getEndOffset();
+        // const selectedText = currentContentBlock.getText().slice(start, end);
+        this.state.socket.emit('highlight', selectionState);
+      } else {
+        this.state.socket.emit('cursor', selectionState);
+      }
       const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
       this.state.socket.emit('change', rawContent);
       this.setState({editorState});
@@ -157,8 +170,6 @@ class DocEditor extends React.Component {
   }
 
   componentDidMount() {
-    var highlight = window.getSelection();
-    this.state.socket.emit('highlight', highlight);
 
     this.state.socket.on('joinMessage', data => {
       console.log(data.content)
@@ -175,19 +186,56 @@ class DocEditor extends React.Component {
       this.setState({workers: data})
     })
     this.state.socket.on('change', data => {
-      console.log('CHANGE DATA', data);
       this.setEditorContent(data);
     })
-    this.state.socket.on('highlight', data => {
-      console.log('EDITOR HIGHLIGHT', data);
+    this.state.socket.on('cursor', selection => {
+      console.log('EDITOR ON CURSOR', selection);
+      // const mySelection = this.state.editorState.getSelection();
+      const updateSelection = new SelectionState({
+  			anchorKey: selection.anchorKey,
+  			anchorOffset: selection.anchorOffset,
+  			focusKey: selection.anchorKey,
+  			focusOffset: selection.focusOffset,
+  			isBackward: selection.isBackward
+  		});
+      let newEditorState = EditorState.acceptSelection(
+        this.state.editorState,
+        updateSelection
+      );
+      newEditorState = EditorState.forceSelection(newEditorState, newEditorState.getSelection());
+      this.setState({editorState: newEditorState});
+    })
+
+    this.state.socket.on('highlight', selection => {
+      console.log('EDITOR ON HIGHLIGHT', selection);
+      const updateSelection = new SelectionState({
+  			anchorKey: selection.anchorKey,
+  			anchorOffset: selection.anchorOffset,
+  			focusKey: selection.anchorKey,
+  			focusOffset: selection.focusOffset,
+  			isBackward: false
+  		});
+      let newEditorState = EditorState.acceptSelection(
+        this.state.editorState,
+        updateSelection
+      );
+      newEditorState = EditorState.forceSelection(newEditorState, newEditorState.getSelection());
+      // const newContentState = Modifier.applyInlineStyle(
+      //   newEditorState.getCurrentContent(),
+      //   updateSelection,
+      //   'HIGHLIGHT'
+      // )
+      // newEditorState = EditorState.createWithContent(newContentState);
+      //this.onChange(newEditorState);
+      // EditorState.push(
+      //   newEditorState,
+      //   newContentState,
+      //   'change-inline-style'
+      // )
+      // this._onHighlight.bind(this)
+      this.setState({editorState: newEditorState});
     })
   }
-
-
-    // setInterval(() => {
-    //   var selObj = window.getSelection();
-    //   window.alert(selObj);
-    // }, 9000);
 
   componentWillUnmount() {
     axios({
@@ -321,6 +369,20 @@ class DocEditor extends React.Component {
   }
 
   _onHighlight() {
+    // const selectionState = this.state.editorState.getSelection();
+    // const anchorKey = selectionState.getAnchorKey();
+    // const currentContent = this.state.editorState.getCurrentContent();
+    // const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+    // const start = selectionState.getStartOffset();
+    // const end = selectionState.getEndOffset();
+    // const selectedText = currentContentBlock.getText().slice(start, end);
+    // console.log('CURRENT CONTENT', currentContent);
+    // console.log('CURRENT CONTENT BLOCK', currentContentBlock);
+    // console.log('SELECTED TEXT', selectedText);
+    // this.state.socket.emit('highlight', {
+    //   block: currentContentBlock,
+    //   target: this
+    // });
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "HIGHLIGHT"
@@ -457,6 +519,7 @@ class DocEditor extends React.Component {
               customStyleMap={styleMap}
               editorState={this.state.editorState}
               onChange={this.onChange}
+              onHighlight={this.onHighlight}
               placeholder="Enter your text below"
               blockRenderMap={extendedBlockRenderMap}
               keyBindingFn={keyBindingFn}

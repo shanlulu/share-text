@@ -187,7 +187,7 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you own</p>
           {this.state.owned.map(doc => {
-            if (doc.currWorkers.length < 2) {
+            if (doc.currWorkers.length < 4) {
               return (
                 <div key={doc._id}>
                   <Link to={"/editor/"+doc._id}>
@@ -212,7 +212,7 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you collaborate on</p>
           {this.state.collab.map(doc => {
-            if (doc.currWorkers.length < 2) {
+            if (doc.currWorkers.length < 4) {
               return (
                 <div key={doc._id}>
                   <Link to={"/editor/"+doc._id}>
