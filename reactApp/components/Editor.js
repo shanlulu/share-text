@@ -598,4 +598,10 @@ class DocEditor extends React.Component {
     );
   }
 }
+// export default {
+//   styleMap,
+//   extendedBlockRenderMap,
+//   DocEditor
+// }
+
 export default DocEditor;
