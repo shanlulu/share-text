@@ -515,7 +515,7 @@ class DocEditor extends React.Component {
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
             <form onSubmit={(e) => this.handleSubmit(e)}>
-              <div style={{display: 'flex', width: 500, flex: 1}} className="form-group">
+              <div style={{display: 'flex', flex: 1}} className="form-group">
                 <label>Search: </label>
                 <input
                   onChange={this.onChangeSearch.bind(this)}
