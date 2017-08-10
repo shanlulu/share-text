@@ -31,7 +31,12 @@ var docSchema = mongoose.Schema({
     name: String,
     color: String
   }],
-  colors: [String]
+  colors: [String],
+  history: [{
+    text: String,
+    date: String,
+    time: String
+  }]
 })
 
 User = mongoose.model('User', userSchema)

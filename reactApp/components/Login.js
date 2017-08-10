@@ -91,8 +91,6 @@ class Login extends React.Component {
             </button>
           </Link>
         </div>
-        <Route path="/library" component={DocLibrary} />
-        <Route path="/register" component={Register} />
       </div>
     )
   }

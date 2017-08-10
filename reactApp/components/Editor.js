@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import DocLibrary from './DocLibrary.js'
+import History from './History.js'
 import {
   Editor,
   EditorState,
@@ -454,9 +455,9 @@ class DocEditor extends React.Component {
   }
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to="/library"/>
-    }
+    // if (this.state.redirect) {
+    //   return <Redirect to="/library"/>
+    // }
 
     return (
       <div>
@@ -535,8 +536,12 @@ class DocEditor extends React.Component {
               Back to Document Library
             </button>
           </Link>
+          <Link to={"/history/"+this.state.doc._id}>
+            <button type="button" className="backButton">
+              Document Save History
+            </button>
+          </Link>
         </div>
-        <Route path="/library" component={DocLibrary} />
       </div>
     );
   }

@@ -125,7 +125,8 @@ app.post('/newdoc', function(req, res) {
     collaborators: [req.user._id],
     content: "",
     currWorkers: [],
-    colors: ['red', 'blue', 'cyan', 'green', 'purple', 'orange']
+    colors: ['red', 'blue', 'cyan', 'green', 'purple', 'orange'],
+    history: []
   });
   newDoc.save(function(err, doc) {
     if (err) {
@@ -202,6 +203,12 @@ app.get('/getdocs', function(req, res) {
       // docs.forEach(doc => {
       //   doc.currWorkers = []
       //   doc.colors = ['red', 'blue', 'cyan', 'green', 'purple', 'orange'];
+      //   doc.history = []
+      //   // doc.history = [{
+      //   //   text: 'hi',
+      //   //   time: new Date().toLocaleTimeString(),
+      //   //   date: new Date().toISOString()
+      //   // }]
       //   doc.save();
       // })
       var id = req.user._id;
@@ -264,9 +271,18 @@ app.post('/savedoc', function(req, res) {
     } else {
       console.log('FOUND DOC', doc);
       doc.content = req.body.content;
+      var now = new Date()
+      var date = now.toISOString()
+      var time = now.toLocaleTimeString()
+      doc.history.push({
+        text: doc.content,
+        date: date,
+        time: time
+      })
+      console.log('HIST', doc.history)
       doc.save(function(err, newDoc) {
         if (err) {
-          console.log('ERROR', err);
+          console.log('ERRRRRRR', err);
           res.status(404).send('CANNOT SAVE DOC');
         } else {
           console.log('SAVED', newDoc);

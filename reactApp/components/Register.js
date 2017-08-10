@@ -81,7 +81,6 @@ class Register extends React.Component {
             </button>
           </Link>
         </div>
-        <Route path="/login" component={Login} />
       </div>
     )
   }
