@@ -105,21 +105,15 @@ class DocEditor extends React.Component {
     };
     this.onChange = (editorState) => {
       console.log('SELECTION', this.state.editorState.getSelection());
-      // if (this.previousHighlight)
-      // highlightStyle
-      // acceptSelection
-      //
       const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
       this.state.socket.emit('change', rawContent);
       this.setState({editorState});
-      this.state.socket.emit('newEdit', editorState);
     }
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
 
   componentWillMount() {
-
     this.state.socket.on('connect', () => {
       console.log('Connect Editor');
     });
@@ -143,16 +137,15 @@ class DocEditor extends React.Component {
         }
       })
       .then(response => {
-        // if (response.data.currWorkers.length > 5) {
-        //   this.setState({redirect: true})
-        // } else {
-          console.log('IN', response.data.currWorkers)
-          this.setState({doc: response.data, workers: response.data.currWorkers})
-          this.state.socket.emit('username', name);
-          this.state.socket.emit('room', response.data._id);
-          this.state.socket.emit('newWorker', response.data.currWorkers);
-          this.setEditorContent(response.data.content)
-        // }
+        console.log('IN', response.data.currWorkers)
+        this.setState({
+          doc: response.data,
+          workers: response.data.currWorkers
+        })
+        this.state.socket.emit('username', name);
+        this.state.socket.emit('room', response.data._id);
+        this.state.socket.emit('newWorker', response.data.currWorkers);
+        this.setEditorContent(response.data.content)
       })
       .catch(err => {
         console.log("Error catching too many users", err)
@@ -388,13 +381,6 @@ class DocEditor extends React.Component {
   }
 
   render() {
-    // var workers;
-    // if (this.state.doc.currWorkers) {
-    //   workers = this.state.doc.currWorkers;
-    // } else {
-    //   workers = [];
-    // }
-
     if (this.state.redirect) {
       return <Redirect to="/library"/>
     }
@@ -410,7 +396,7 @@ class DocEditor extends React.Component {
             <p className="libraryHeader">Current Workers</p>
             {this.state.workers.map((worker, i) => {
               return (
-                <li key={i} className="doc">
+                <li key={i} className="doc" style={{color: worker.color}}>
                   {worker.name}
                 </li>
               )

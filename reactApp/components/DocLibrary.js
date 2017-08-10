@@ -19,7 +19,8 @@ class DocLibrary extends React.Component {
       docId: '',
       sharedDocID: '',
       sharedDocPassword: '',
-      socket: io('http://localhost:3000')
+      socket: io('http://localhost:3000'),
+      trigger: false
     }
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -32,11 +33,14 @@ class DocLibrary extends React.Component {
     this.inputChangePassword = this.inputChangePassword.bind(this);
   }
 
-  componentDidMount() {
-    // this.state.socket.on('connect', () => {
-    //   console.log('Connect Library');
-    // });
+  componentWillMount() {
+    this.state.socket.on('connect', () => {
+      console.log('Connect Library');
+    });
+    this.state.socket.emit('room', 'library')
+  }
 
+  refresh() {
     axios({
       method: 'get',
       url: 'http://localhost:3000/getdocs'
@@ -57,6 +61,39 @@ class DocLibrary extends React.Component {
     .catch(err => {
       console.log("Error fetching docs", err)
     })
+  }
+
+  componentDidMount() {
+    this.state.socket.on('joinMessage', data => {
+      console.log(data.content)
+    })
+    this.state.socket.on('reload', () => {
+      this.refresh();
+    })
+
+    setTimeout(() => {
+      axios({
+        method: 'get',
+        url: 'http://localhost:3000/getdocs'
+      })
+      .then(response => {
+        var owned = [];
+        var collab = [];
+
+        response.data.docs.forEach(doc => {
+          if (doc.owner === response.data.id) {
+            owned = owned.concat(doc)
+          } else if (doc.collaborators.includes(response.data.id)) {
+            collab = collab.concat(doc)
+          }
+        })
+        this.setState({owned: owned, collab: collab})
+      })
+      .catch(err => {
+        console.log("Error fetching docs", err)
+      })
+    }, 1000)
+
   }
 
   openModal() {
@@ -150,15 +187,7 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you own</p>
           {this.state.owned.map(doc => {
-            if (doc.currWorkers.length > 5) {
-              return (
-                <div key={doc._id}>
-                  <li className="doc full">
-                    {doc.title}
-                  </li>
-                </div>
-              )
-            } else {
+            if (doc.currWorkers.length < 2) {
               return (
                 <div key={doc._id}>
                   <Link to={"/editor/"+doc._id}>
@@ -167,6 +196,14 @@ class DocLibrary extends React.Component {
                     </li>
                   </Link>
                   <Route path={"/editor/"+doc._id} component={DocEditor} />
+                </div>
+              )
+            } else {
+              return (
+                <div key={doc._id}>
+                  <li className="doc full">
+                    {doc.title}
+                  </li>
                 </div>
               )
             }
@@ -175,16 +212,7 @@ class DocLibrary extends React.Component {
         <ul className="docList">
           <p className="libraryHeader">Docs you collaborate on</p>
           {this.state.collab.map(doc => {
-            console.log(doc.currWorkers.length)
-            if (doc.currWorkers.length > 5) {
-              return (
-                <div key={doc._id}>
-                  <li className="doc full">
-                    {doc.title}
-                  </li>
-                </div>
-              )
-            } else {
+            if (doc.currWorkers.length < 2) {
               return (
                 <div key={doc._id}>
                   <Link to={"/editor/"+doc._id}>
@@ -193,6 +221,14 @@ class DocLibrary extends React.Component {
                     </li>
                   </Link>
                   <Route path={"/editor/"+doc._id} component={DocEditor} />
+                </div>
+              )
+            } else {
+              return (
+                <div key={doc._id}>
+                  <li className="doc full">
+                    {doc.title}
+                  </li>
                 </div>
               )
             }
