@@ -26,7 +26,12 @@ var docSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
-  content: String
+  content: String,
+  currWorkers: [{
+    name: String,
+    color: String
+  }],
+  colors: [String]
 })
 
 User = mongoose.model('User', userSchema)

@@ -14,7 +14,7 @@ import {
   createWithContent
 } from 'draft-js';
 import Immutable from 'immutable'
-import { Link, Route } from 'react-router-dom'
+import { Link, Route, Redirect } from 'react-router-dom'
 import axios from 'axios'
 
 const { hasCommandModifier } = KeyBindingUtil;
@@ -99,7 +99,9 @@ class DocEditor extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty(),
       doc: {},
-      socket: io('http://localhost:3000')
+      socket: io('http://localhost:3000'),
+      workers: [],
+      redirect: false
     };
     this.onChange = (editorState) => {
       console.log('SELECTION', this.state.editorState.getSelection());
@@ -125,6 +127,7 @@ class DocEditor extends React.Component {
     this.state.socket.on('errorMessage', message => {
       alert('There was an error connecting!', message)
     });
+
     axios({
       method: 'get',
       url: 'http://localhost:3000/checkuser'
@@ -135,15 +138,24 @@ class DocEditor extends React.Component {
         method: 'post',
         url: 'http://localhost:3000/getdoc',
         data: {
-          id: this.props.match.params.docId
+          id: this.props.match.params.docId,
+          mount: true
         }
       })
       .then(response => {
-        console.log(response.data)
-        this.setState({doc: response.data})
-        this.state.socket.emit('username', name);
-        this.state.socket.emit('room', response.data._id);
-        this.setEditorContent(response.data.content)
+        // if (response.data.currWorkers.length > 5) {
+        //   this.setState({redirect: true})
+        // } else {
+          console.log('IN', response.data.currWorkers)
+          this.setState({doc: response.data, workers: response.data.currWorkers})
+          this.state.socket.emit('username', name);
+          this.state.socket.emit('room', response.data._id);
+          this.state.socket.emit('newWorker', response.data.currWorkers);
+          this.setEditorContent(response.data.content)
+        // }
+      })
+      .catch(err => {
+        console.log("Error catching too many users", err)
       })
     })
     .catch(err => {
@@ -152,29 +164,58 @@ class DocEditor extends React.Component {
   }
 
   componentDidMount() {
-
     var highlight = window.getSelection();
     this.state.socket.emit('highlight', highlight);
 
-    this.state.socket.on('message', data => {
-      let newMsg= data.username + ' joined room ' + data.content
-      console.log(newMsg)
+    this.state.socket.on('joinMessage', data => {
+      console.log(data.content)
     })
-
+    this.state.socket.on('leaveMessage', data => {
+      console.log(data.content)
+    })
+    this.state.socket.on('newWorker', data => {
+      console.log('Hi', data)
+      this.setState({workers: data})
+    })
+    this.state.socket.on('leaveWorker', data => {
+      console.log('Bye', data)
+      this.setState({workers: data})
+    })
     this.state.socket.on('change', data => {
       console.log('CHANGE DATA', data);
       this.setEditorContent(data);
     })
-
     this.state.socket.on('highlight', data => {
       console.log('EDITOR HIGHLIGHT', data);
     })
+  }
 
 
     // setInterval(() => {
     //   var selObj = window.getSelection();
     //   window.alert(selObj);
     // }, 9000);
+
+  componentWillUnmount() {
+    axios({
+      method: 'post',
+      url: 'http://localhost:3000/getdoc',
+      data: {
+        id: this.state.doc._id,
+        mount: false
+      }
+    })
+    .then(response => {
+      console.log('OUT', response.data.currWorkers)
+      this.state.socket.emit('leave', this.state.doc._id)
+      this.state.socket.emit('leaveWorker', response.data.currWorkers);
+      this.state.socket.on('leaveMessage', data => {
+        console.log(data.content)
+      })
+      this.state.socket.on('leaveWorker', data => {
+        console.log('OUTTA HERE', data)
+      })
+    })
   }
 
   _onFontSizeClick() {
@@ -330,7 +371,7 @@ class DocEditor extends React.Component {
 
   saveEditorContent() {
     const rawDraftContentState = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
-    console.log('RAW', rawDraftContentState);
+    // console.log('RAW', rawDraftContentState);
     axios({
       method: 'post',
       url: 'http://localhost:3000/savedoc',
@@ -340,19 +381,30 @@ class DocEditor extends React.Component {
       }
     })
     .then(updatedDoc => {
-      console.log('SAVED', updatedDoc)
+      // console.log('SAVED', updatedDoc)
       this.setState({doc: updatedDoc.data})
     })
   }
 
   setEditorContent (rawDraftContentState) {
-    console.log('RAW', rawDraftContentState);
+    // console.log('RAW', rawDraftContentState);
     const contentState = convertFromRaw(JSON.parse(rawDraftContentState));
     const editorState = EditorState.createWithContent(contentState);
     this.setState({ editorState });
   }
 
   render() {
+    // var workers;
+    // if (this.state.doc.currWorkers) {
+    //   workers = this.state.doc.currWorkers;
+    // } else {
+    //   workers = [];
+    // }
+
+    if (this.state.redirect) {
+      return <Redirect to="/library"/>
+    }
+
     return (
       <div>
         <div style={{ margin: "20px" }} className="body">
@@ -360,6 +412,16 @@ class DocEditor extends React.Component {
 
           <p className="docID">Document ID: {this.state.doc._id}</p>
           <button type="button" className="shareButton">Share Document</button><br></br>
+          <ul className="docList">
+            <p className="libraryHeader">Current Workers</p>
+            {this.state.workers.map((worker, i) => {
+              return (
+                <li key={i} className="doc">
+                  {worker.name}
+                </li>
+              )
+            })}
+          </ul>
           <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
           <div className="toolbar">
             <span title="Change Text Size">

@@ -140,6 +140,9 @@
   color: #505A5B;
   font-family: 'Saira', sans-serif;
 }
+.full {
+  color: red
+}
 
 /* Registration classes */
 .registerInput {
