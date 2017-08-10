@@ -164,3 +164,6 @@
   color: red;
   font-family: 'Saira', sans-serif;
 }
+.highlightText {
+  background: linear-gradient( #fdb99b, #fd746c);
+}

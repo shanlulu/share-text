@@ -13,7 +13,8 @@ import {
   convertFromRaw,
   convertToRaw,
   createWithContent,
-  Modifier
+  Modifier,
+  CompositeDecorator
 } from 'draft-js';
 import Immutable from 'immutable'
 import { Link, Route, Redirect } from 'react-router-dom'
@@ -95,6 +96,32 @@ const blockRenderMap = Immutable.Map({
 
 const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 
+const generateDecorator = (highlightTerm) => {
+  const regex = new RegExp(highlightTerm, 'g');
+  return new CompositeDecorator([{
+    strategy: (contentBlock, callback) => {
+      if (highlightTerm !== '') {
+        findWithRegex(regex, contentBlock, callback);
+      }
+    },
+    component: SearchHighlight,
+  }])
+};
+
+const findWithRegex = (regex, contentBlock, callback) => {
+  const text = contentBlock.getText();
+  let matchArr, start, end;
+  while ((matchArr = regex.exec(text)) !== null) {
+    start = matchArr.index;
+    end = start + matchArr[0].length;
+    callback(start, end);
+  }
+};
+
+const SearchHighlight = (props) => (
+  <span className="highlightText">{props.children}</span>
+);
+
 class DocEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -110,7 +137,8 @@ class DocEditor extends React.Component {
         focusKey: '',
         focusOffset: 0,
         isBackward: false
-      }
+      },
+      search: ''
     };
     this.onChange = (editorState) => {
       const selectionState = editorState.getSelection();
@@ -453,6 +481,15 @@ class DocEditor extends React.Component {
     this.setState({ editorState });
   }
 
+  onChangeSearch(e){
+  const search = e.target.value;
+  this.setState({
+    search,
+    editorState: EditorState.set(this.state.editorState, { decorator: generateDecorator(search) }),
+  })
+  console.log("SEARCHING FOR: ", this.state.search)
+}
+
   render() {
     if (this.state.redirect) {
       return <Redirect to="/library"/>
@@ -475,7 +512,22 @@ class DocEditor extends React.Component {
               )
             })}
           </ul>
-          <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
+          <div style={{display: 'flex', }}>
+            <button type="button" className="saveButton" onClick={this.saveEditorContent.bind(this)}>Save Changes</button>
+            <form onSubmit={(e) => this.handleSubmit(e)}>
+              <div style={{display: 'flex', flexDirection: 'row'}} className="form-group">
+                <label>Search: </label>
+                <input
+                  onChange={this.onChangeSearch.bind(this)}
+                  type="text"
+                  name="search"
+                  className="form-control registerInput"
+                  placeholder="Search in document"
+                  value={this.state.search}
+                  required></input>
+              </div>
+            </form>
+          </div>
           <div className="toolbar">
             <span title="Change Text Size">
               <button
