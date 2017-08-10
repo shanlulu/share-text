@@ -16,16 +16,76 @@ import {
   Modifier
 } from 'draft-js';
 import { Link, Route, Redirect } from 'react-router-dom'
+import Immutable from 'immutable'
 import axios from 'axios'
+
+const styleMap = {
+  'SIZE_10': {
+    fontSize: 10
+  },
+  'SIZE_12': {
+    fontSize: 12
+  },
+  'SIZE_16': {
+    fontSize: 16
+  },
+  'SIZE_20': {
+    fontSize: 20
+  },
+  'SIZE_24': {
+    fontSize: 24
+  },
+  'SIZE_48': {
+    fontSize: 48
+  },
+  'BLACK': {
+    color: 'black'
+  },
+  'RED': {
+    color: 'red'
+  },
+  'ORANGE': {
+    color: 'orange'
+  },
+  'YELLOW': {
+    color: 'yellow'
+  },
+  'GREEN': {
+    color: 'green'
+  },
+  'BLUE': {
+    color: 'blue'
+  },
+  'PURPLE': {
+    color: 'purple'
+  },
+  'HIGHLIGHT': {
+    backgroundColor: '#fff493'
+  }
+}
+
+const blockRenderMap = Immutable.Map({
+  'ALIGN_LEFT': {
+    wrapper: <div className='left' />
+  },
+  'ALIGN_CENTER': {
+    wrapper: <div className='center' />
+  },
+  'ALIGN_RIGHT': {
+    wrapper: <div className='right' />
+  }
+})
+
+const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 
 class History extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       doc: {},
       history: [],
-      current: '',
-      old: 'Select a saved version of this document to compare',
+      current: EditorState.createEmpty(),
+      old: EditorState.createWithContent(ContentState.createFromText('Select a saved version of this document to compare')),
       index: -1
     }
   }
@@ -39,10 +99,14 @@ class History extends React.Component {
       }
     })
     .then(response => {
+      const contentState = convertFromRaw(JSON.parse(response.data.content));
+      // console.log('CONTENT STATE', contentState.getPlainText());
+      //const editorState = EditorState.createWithContent(contentState);
+      const editorState = EditorState.createWithContent(contentState);
       this.setState({
         doc: response.data,
         history: response.data.history,
-        current: response.data.content
+        current: editorState
       })
     })
     .catch(err => {
@@ -51,8 +115,11 @@ class History extends React.Component {
   }
 
   select(log, i) {
-    this.setState({old: log.text, index: i})
-  }
+    const contentState = convertFromRaw(JSON.parse(log.text));
+    console.log('OLD STATE', contentState.getPlainText());
+    const editorState = EditorState.createWithContent(contentState);
+    // this.setState({ current: editorState });
+    this.setState({old: editorState, index: i})
 
   restore(index) {
     console.log("AT ", this.state.history[index])
@@ -86,31 +153,28 @@ class History extends React.Component {
             <div className="editContainer">
               <div className="editBox">
                 <p className="libraryHeader">Current Doc</p>
-                <p className="docID">{this.state.current}</p>
-                {/* <Editor
+                {/*<p className="docID">{this.state.current}</p> */}
+                <Editor
                   customStyleMap={styleMap}
-                  editorState={this.state.editorState}
-                  onChange={this.onChange}
-                  placeholder="Enter your text below"
+                  editorState={this.state.current}
+                  onChange={(e) => {console.log(e);}}
+                  // placeholder="Enter your text below"
                   blockRenderMap={extendedBlockRenderMap}
-                  keyBindingFn={keyBindingFn}
-                  handleKeyCommand={this.handleKeyCommand}
+                  // keyBindingFn={keyBindingFn}
+                  // handleKeyCommand={this.handleKeyCommand}
                   readOnly="true"
-                /> */}
+                />
               </div>
               <div className="editBox">
                 <p className="libraryHeader">Saved Doc</p>
-                <p className="docID">{this.state.old}</p>
-                {/* <Editor
+                {/* <p className="docID">{this.state.old}</p> */}
+                <Editor
                   customStyleMap={styleMap}
-                  editorState={this.state.editorState}
-                  onChange={this.onChange}
-                  placeholder="Enter your text below"
+                  editorState={this.state.old}
+                  onChange={(e) => {console.log(e);}}
                   blockRenderMap={extendedBlockRenderMap}
-                  keyBindingFn={keyBindingFn}
-                  handleKeyCommand={this.handleKeyCommand}
                   readOnly="true"
-                /> */}
+                />
               </div>
             </div>
             <div className="histContainer">
