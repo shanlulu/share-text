@@ -200,7 +200,6 @@ class DocEditor extends React.Component {
       }
     })
     .then(response => {
-      // console.log('OUT')
       console.log('OUT', response.data.currWorkers)
       this.state.socket.emit('leave', this.state.doc._id)
       this.state.socket.emit('leaveWorker', response.data.currWorkers);

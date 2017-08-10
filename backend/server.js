@@ -216,7 +216,6 @@ app.post('/getdoc', function(req, res) {
       console.log("Error fetching doc", err)
     } else {
       console.log('d',doc.currWorkers)
-      
       console.log(req.user.username)
       if (req.body.mount) {
         console.log('hi user')
@@ -229,6 +228,7 @@ app.post('/getdoc', function(req, res) {
         // if (!doc.currWorkers.includes('@' + req.user.username)) {
         if (!included) {
           console.log('for real do')
+          var
           doc.currWorkers.push({
             name: '@' + req.user.username,
             color: 'blue'
